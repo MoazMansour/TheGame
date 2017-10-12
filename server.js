@@ -23,6 +23,16 @@ app.get('/', function(request, response){
 	console.log("test.html sent");
 });
 
+app.get('/game.js', function(request, response) {
+	response.sendFile(__dirname + '/HTML/game.js');
+	console.log("game.js sent");
+})
+
+app.get('/style.css', function(request, response) {
+	response.sendFile(__dirname + '/HTML/style.css');
+	console.log("style.css sent");
+})
+
 //route for username check
 app.post('/username', function(request, response){
 	var username = request.body;
