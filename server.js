@@ -1,6 +1,8 @@
 //must have node JS setup on system 
 var express = require('express');
 var bodyParser = require('body-parser');
+var sqlite3 = require('sqlite3').verbose();
+var db = new sqlite3.Database('database.db');
 var app = express();
 
 app.use(bodyParser.urlencoded({
@@ -41,4 +43,15 @@ app.post('/username', function(request, response){
 
 
 })
+
+db.serialize(function() {
+	db.run("DROP TABLE users");
+	db.run("CREATE TABLE users (account_id, username TEXT, salt TEXT, hash TEXT)");
+	db.run("INSERT INTO users VALUES (1, 'admin', 'today', 'abcdefg')");
+
+
+	db.each("SELECT account_id AS id, username FROM users", function(err, row) {
+		console.log(row.id + ": " + row.username);
+	});
+});
 
