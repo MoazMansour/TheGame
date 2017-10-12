@@ -12,6 +12,8 @@ Aeshaan Wahlang
 
 You must first have nodejs and NPM installed on your system
 
+```
 $ cd <project directory>  
 $ npm install  
 $ <node or nodejs> server.js   
+```
