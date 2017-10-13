@@ -2,7 +2,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('/resources/database.db');
+var db = new sqlite3.Database('resources/database.db');
 var app = express();
 
 app.use(bodyParser.urlencoded({
