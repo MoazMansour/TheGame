@@ -1,7 +1,9 @@
+var socket;
+
 function init()
 {
 	console.log("socket");
-	var socket = io.connect('http://localhost:8081');
+	socket = io.connect('http://localhost:8081');
 	socket.on('news', function (data) {
 		console.log(data);
 		socket.emit('my other event', { my: 'data' });
@@ -10,38 +12,40 @@ function init()
 
 
 function signin()
-{
-	var username, password, timeStamp="", hash;
-	
+{	
 	username = document.getElementById("username").value;
 	password = document.getElementById("password").value;
 	
 	socket.emit('send_user', username);
-	
-	//RETURNS TIMESTAMP IF EXISTS IN VARIABLE 'timeStamp'
-	
-	hash=CryptoJS.MD5(password+timeStamp);
-	alert(hash);
-	
-	//SEND MD5(HASH) TO SERVER
-	//RETURNS SUCCESS, REDIRECTS TO NEXT PAGE: window.location = "trial_success.html";
-	//RETURNS FAILURE, PRINT INCORRECT: alert("Incorrect Username/Password Entered!");
+	socket.on('get_timestamp', function (data) {
+		console.log(data);
+		if(data.successful == true) {
+			hash=CryptoJS.MD5(password+data.salt);
+			socket.emit('send_hash', hash);
+			socket.on('login_confirm', function (data) {
+				console.log(data);
+				if(data == true) {
+					window.location = "success.html";
+				}
+			});
+		}
+	});
 }
 
-/*function signup()
+function signup()
 {
-	var username, password, timeStamp, hash;
-	
-	username = document.getElementById("username").value;
-	password = document.getElementById("password").value;
 	timeStamp = Date.now();
 	
-	hash = password + timeStamp;
+	socket.emit('signup', { user: document.getElementById("username").value,
+							hash: CryptoJS.MD5(document.getElementById("password").value + timeStamp),
+							salt: timeStamp
+							});
 	
-	//SENDS USERNAME TO SERVER HERE
-	//IF EXISTS ALREADY: alert("Username already exists!");
-	
-	//IF NOT
-	//SEND USERNAME, TIMESTAMP, MD5(HASH) TO SERVER TO STORE IN DB
-	//REDIRECT TO NEXT PAGE: window.location = "trial_success.html";
-}*/
+	socket.on('signup_confirm', function (data){
+		console.log(data);
+		if(data == true)
+			window.location = "success.html";
+		else
+			alert("Username already exists!");
+	});
+}
