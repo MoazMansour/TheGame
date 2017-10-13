@@ -15,7 +15,7 @@ function signin()
 	console.log(md5(hash));
 	
 	//SEND MD5(HASH) TO SERVER
-	//RETURNS SUCCESS, REDIRECTS TO NEXT PAGE: window.location = "success.html";
+	//RETURNS SUCCESS, REDIRECTS TO NEXT PAGE: window.location = "trial_success.html";
 	//RETURNS FAILURE, PRINT INCORRECT: alert("Incorrect Username/Password Entered!");
 }
 
@@ -34,5 +34,5 @@ function signup()
 	
 	//IF NOT
 	//SEND USERNAME, TIMESTAMP, MD5(HASH) TO SERVER TO STORE IN DB
-	//REDIRECT TO NEXT PAGE: window.location = "success.html";
+	//REDIRECT TO NEXT PAGE: window.location = "trial_success.html";
 }
