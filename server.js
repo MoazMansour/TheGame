@@ -45,7 +45,7 @@ app.post('/username', function(request, response){
 })
 
 db.serialize(function() {
-	db.run("DROP TABLE users");
+	db.run("DROP TABLE IF EXISTS users");
 	db.run("CREATE TABLE users (account_id, username TEXT, salt TEXT, hash TEXT)");
 	db.run("INSERT INTO users VALUES (1, 'admin', 'today', 'abcdefg')");
 
