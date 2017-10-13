@@ -1,3 +1,14 @@
+function init()
+{
+	console.log("socket");
+	var socket = io.connect('http://localhost:8081');
+	socket.on('news', function (data) {
+		console.log(data);
+		socket.emit('my other event', { my: 'data' });
+	});
+}
+
+
 function signin()
 {
 	var username, password, timeStamp="", hash;
@@ -5,10 +16,8 @@ function signin()
 	username = document.getElementById("username").value;
 	password = document.getElementById("password").value;
 	
-	var request = makeHttpObject();
-	request.open("post", "localhost:8081/username", false);
-	request.send(username);
-	print(request.responseText);
+	socket.emit('send_user', username);
+	
 	//RETURNS TIMESTAMP IF EXISTS IN VARIABLE 'timeStamp'
 	
 	hash=CryptoJS.MD5(password+timeStamp);

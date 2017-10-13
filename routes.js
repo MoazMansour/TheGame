@@ -4,6 +4,8 @@ var sqlite3 = require('sqlite3').verbose();
 //var db = new sqlite3.Database('/resources/database.db');
 
 var app = express();
+var server = require('http').Server(app);
+
 app.use(bodyParser.urlencoded({
   extended: true
 }));
@@ -22,7 +24,7 @@ app.use(bodyParser.json());
 
 //routes
 exports.home = function(request, response){
-	response.sendFile(__dirname + '/resources/templates/game/index.html');
+	response.sendFile(__dirname + '/resources/templates/login/login.html');
 	console.log("test.html sent");
 }
 
@@ -41,4 +43,14 @@ exports.username = function(request, response){
 	console.log(request.body);
 	//check username with data base and respond with salt
 
+}
+
+exports.login = function(request, response){
+	response.sendFile(__dirname + '/resources/templates/login/login.js');
+	console.log("login.js sent");
+}
+
+exports.md5 = function(request, response){
+	response.sendFile(__dirname + '/resources/templates/login/md5.js');
+	console.log("md5.js sent");
 }
