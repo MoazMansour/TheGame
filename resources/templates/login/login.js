@@ -25,7 +25,7 @@ function signin()
 			socket.on('login_confirm', function (data) {
 				console.log(data);
 				if(data == true) {
-					window.location = "success.html";
+					window.location = "index.html";
 				}
 			});
 		}
