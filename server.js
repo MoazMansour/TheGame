@@ -1,15 +1,13 @@
-//must have node JS setup on system 
+//must have node JS setup on system
 var express = require('express');
+<<<<<<< HEAD
+=======
 var bodyParser = require('body-parser');
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('/resources/database.db');
+var db = new sqlite3.Database('resources/database.db');
+>>>>>>> 280ed3b430825d470b2b37aa6ba28562fcb739c4
 var app = express();
-
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
-app.use(bodyParser.json());
-
+var routes = require('./routes.js');
 
 //creating server
 var server = app.listen(8081, function(){
@@ -20,6 +18,12 @@ var server = app.listen(8081, function(){
 })
 
 //basic routes
+<<<<<<< HEAD
+app.get('/', routes.home)
+app.get('/game.js', routes.game)
+app.get('/style.css', routes.style)
+app.post('/username', routes.username)
+=======
 app.get('/', function(request, response){
 	response.sendFile(__dirname + '/resources/templates/game/index.html');
 	console.log("test.html sent");
@@ -45,7 +49,7 @@ app.post('/username', function(request, response){
 })
 
 db.serialize(function() {
-	db.run("DROP TABLE users");
+	db.run("DROP TABLE IF EXISTS users");
 	db.run("CREATE TABLE users (account_id, username TEXT, salt TEXT, hash TEXT)");
 	db.run("INSERT INTO users VALUES (1, 'admin', 'today', 'abcdefg')");
 
@@ -55,3 +59,4 @@ db.serialize(function() {
 	});
 });
 
+>>>>>>> 280ed3b430825d470b2b37aa6ba28562fcb739c4
