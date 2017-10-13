@@ -2,7 +2,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('database.db');
+var db = new sqlite3.Database('/resources/database.db');
 var app = express();
 
 app.use(bodyParser.urlencoded({
@@ -21,17 +21,17 @@ var server = app.listen(8081, function(){
 
 //basic routes
 app.get('/', function(request, response){
-	response.sendFile(__dirname + '/HTML/index.html');
+	response.sendFile(__dirname + '/resources/templates/game/index.html');
 	console.log("test.html sent");
 });
 
 app.get('/game.js', function(request, response) {
-	response.sendFile(__dirname + '/HTML/game.js');
+	response.sendFile(__dirname + '/resources/templates/game/game.js');
 	console.log("game.js sent");
 })
 
 app.get('/style.css', function(request, response) {
-	response.sendFile(__dirname + '/HTML/style.css');
+	response.sendFile(__dirname + '/resources/templates/game/style.css');
 	console.log("style.css sent");
 })
 
