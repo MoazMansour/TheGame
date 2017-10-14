@@ -98,6 +98,7 @@ db.serialize(function() {
 app.get('/', routes.home)
 app.get('/login.js', routes.login)
 app.get('/md5.js', routes.md5)
+app.get('/index.html', routes.start)
 app.get('/game.js', routes.game)
 app.get('/style.css', routes.style)
 app.post('/username', routes.username)

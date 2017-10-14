@@ -20,6 +20,10 @@ exports.style = function(request, response) {
 	console.log("style.css sent");
 }
 
+exports.start = function(request, response) {
+	response.sendFile(__dirname + '/resources/templates/game/index.html');
+	console.log("index.html sent");
+}
 exports.game = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/game/game.js');
 	console.log("game.js sent");

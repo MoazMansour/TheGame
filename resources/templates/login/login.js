@@ -27,8 +27,12 @@ function signin()
 				if(data == true) {
 					window.location = "index.html";
 				}
+				else
+					alert("Incorrect Password!");
 			});
 		}
+		else
+			alert("Username does not exist!");
 	});
 }
 
@@ -44,7 +48,10 @@ function signup()
 	socket.on('signup_confirm', function (data){
 		console.log(data);
 		if(data == true)
-			window.location = "success.html";
+		{
+			alert("Account created successfully!");
+			window.location = "index.html";
+		}
 		else
 			alert("Username already exists!");
 	});
