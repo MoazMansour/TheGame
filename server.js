@@ -28,50 +28,51 @@ io.on('connection', function (socket) {
 			if(err){
 				return console.log(err);
 			}
-			if(row!= null){
+			if(row != null){
 				socket.emit('signup_confirm', false);
 			}
 			//Creating new user
 			else {
-				db.run("INSERT INTO users VALUES(?, ?, ?, ?)", [2, data.user, data.salt, data.hash], function(err){
-					if(err){
-						return console.log(err);
-					}
-					socket.emit('signup_confirm', true);
-					console.log( data.user +" added");
+				db.get("SELECT Count(*) as user_count FROM users", function(err, row) {
+					db.run("INSERT INTO users VALUES(?, ?, ?, ?)", [row.user_count + 1, data.user, data.salt, data.hash], function(err){
+						if(err){
+							return console.log(err);
+						}
+						socket.emit('signup_confirm', true);
+						console.log( data.user +" added");
+					});
+					console.log("Current Table: ");
+					db.each("SELECT * FROM users", function(err, rows) {
+						console.log(rows.account_id + " " + rows.username + " " + rows.hash + " " + rows.salt);
 					})
-					console.log("Current Table:");
-					db.each("SELECT * FROM users", function(err, rows){
-						console.log(rows.username + " " + rows.hash + " " + rows.salt);
-					})
+				});
+				
 			}
 		})
 	});
 
 	socket.on('send_user', function(data){
-		db.get("SELECT salt, hash FROM users WHERE username = ?", [data], function(err, row){
-			if(err){
+		db.get("SELECT salt, hash FROM users WHERE username = ?", [data], function(err, row) {
+			if(err) {
 				return console.log(err);
 			}
-			if(row!=null){
+			if(row != null) {
 				console.log("Salt sent: " + row.salt);
-				socket.emit('get_timestamp',{successful:true, salt: row.salt});
-			}
-			else{
+				socket.emit('get_timestamp', {successful:true, salt: row.salt});
+			} else {
 				socket.emit('get_timestamp',{successful:false});
 			}
 
-			socket.on('send_hash', function(data){
+			socket.on('send_hash', function(data) {
 				console.log('Stored hash: '+ row.hash + ' Recieved hash: '+data);
-				if(row.hash == data){
+				if(row.hash == data) {
 					socket.emit('login_confirm', true);
 					console.log('User Verified');
-				}
-				else{
+				} else {
 					socket.emit('login_confirm', false);
 					console.log('User NOT Verified');
 				}
-			})
+			});
 
 		})
 	})
