@@ -6,21 +6,21 @@ function init()
 	socket = io.connect('http://localhost:8081');
 	socket.on('news', function (data) {
 		console.log(data);
-		socket.emit('my other event', { my: 'data' });
+		//socket.emit('my other event', { my: 'data' });
 	});
 }
 
 
 function signin()
-{	
+{
 	username = document.getElementById("username").value;
 	password = document.getElementById("password").value;
-	
+
 	socket.emit('send_user', username);
 	socket.on('get_timestamp', function (data) {
 		console.log(data);
 		if(data.successful == true) {
-			hash=CryptoJS.MD5(password+data.salt);
+			hash=String(CryptoJS.MD5(password+data.salt));
 			socket.emit('send_hash', hash);
 			socket.on('login_confirm', function (data) {
 				console.log(data);
@@ -35,12 +35,12 @@ function signin()
 function signup()
 {
 	timeStamp = Date.now();
-	
+
 	socket.emit('signup', { user: document.getElementById("username").value,
-							hash: CryptoJS.MD5(document.getElementById("password").value + timeStamp),
+							hash: String(CryptoJS.MD5(document.getElementById("password").value + timeStamp)),
 							salt: timeStamp
 							});
-	
+
 	socket.on('signup_confirm', function (data){
 		console.log(data);
 		if(data == true)
