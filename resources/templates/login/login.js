@@ -38,7 +38,7 @@ function signup()
 
 	socket.emit('signup', { user: document.getElementById("username").value,
 							hash: String(CryptoJS.MD5(document.getElementById("password").value + timeStamp)),
-							salt: timeStamp
+							salt: String(timeStamp)
 							});
 
 	socket.on('signup_confirm', function (data){
