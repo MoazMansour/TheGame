@@ -86,4 +86,8 @@ function collision(x, y, width, height, building) {
     }
 }
 
+function logout() {
+    window.location = "/";
+}
+
 startGame();
