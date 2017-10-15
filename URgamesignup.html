@@ -1,105 +1,45 @@
 <!DOCTYPE html>
 <html>
-<style>
-form {
-    border: 3px solid #f1f1f1;
-}
-h2 {
-	text-align: center;
-}
-input[type=text], input[type=password], input[type=firstname], input[type=lastname], input[type=email], input[type=telephone]{
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-}
+ <head>
+	<title>The Game Signup</title>
+	<link rel="stylesheet" href="signup.css">
+	<script src="md5.js" type="text/javascript"></script> <!-- CRYPTOJS (NEW BSD LICENSE) -->
+	<script src="login.js" type="text/javascript"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+ </head>
 
-body {
-border: 5px solid #fdce26;
-}
+<body onload="init()">
 
-button {
-    background-color: #274e90;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-}
+<h2>THE GAME</h2>
 
-button:hover {
-    opacity: 0.8;
-}
-
-.cancelbtn {
-    width: auto;
-    padding: 10px 18px;
-    background-color: #f44336;
-}
-
-.imgcontainer {
-    text-align: center;
-    margin: 24px 0 12px 0;
-}
-
-img.avatar {
-    width: 40%;
-    border-radius: 50%;
-}
-
-.container {
-    padding: 16px;
-}
-
-span.psw {
-    float: right;
-    padding-top: 16px;
-}
-
-/* Change styles for span and cancel button on extra small screens */
-@media screen and (max-width: 300px) {
-    span.psw {
-       display: block;
-       float: none;
-    }
-    .cancelbtn {
-       width: 100%;
-    }
-}
-</style>
-<body>
-
-<h2>Sign Up</h2>
-
-<form action="/action_page.php">
+<form id="form_id" method="post" name="myform">
   <div class="imgcontainer">
     <img src="uofrlogo.png" alt="University of Rochester logo" class="avatar">
   </div>
 
   <div class="container">
-    <label><b>Username</b></label>
-    <input type="text" placeholder="Enter Username" name="uname" required>
+    <img src = "images/1.png" alt = "usrname" height="35" width="35">
+	<label><b><font color="white">Username</font></b></label>
+    <input type="text" placeholder="Enter Username" name="username" id="username" required>
 
-    <label><b>Password</b></label>
-    <input type="password" placeholder="Enter Password" name="psw" required>
+	<img src = "images/2.png" alt = "usrname" height="35" width="35">
+    <label><b><font color="white">Password</font></b></label>
+    <input type="password" placeholder="Enter Password" name="password" id="password" required>
 	
-	<label><b>First Name</b></label>
-	<input type="firstname" placeholder="Rocky" name="firstname" required><br />
+	<!-- 
+		<label><b>First Name</b></label>
+		<input type="firstname" placeholder="Rocky" name="firstname" ><br />
+		
+		<label><b>Last Name</b></label>
+		<input type="lastname" placeholder="Yellow Jacket" name="lastname"><br />
+		
+		<label><b>Email Address</b></label>
+		<input type="email" name="email" > 
+	-->
 	
-	<label><b>Last Name</b></label>
-	<input type="lastname" placeholder="Yellow Jacket" name="lastname" required><br />
-	
-	<label><b>Email Address</b></label>
-	<input type="email" name="email" required>
-	
-	<label><b>Telephone</b></label>
-	<input type="telephone" name="tel" />
-	
-    <button type="submit">Sign Up</button>
-    <input type="checkbox" checked="checked"> Remember me
+    <button type="submit" onclick="signup()">Sign Up</button>
+	<button type="submit" onclick="signin()">Sign In</button>
+    <input type="checkbox" checked="checked"><font color="white">Remember me</font>
   </div>
 
   <div class="container" style="background-color:#f1f1f1">
