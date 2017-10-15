@@ -4,7 +4,7 @@
 
 Willie Cohen  
 Mounica Kota  
-Moaaz Mansour  
+Moaz Mansour  
 Sayudh Roy  
 Aeshaan Wahlang  
 
@@ -16,4 +16,5 @@ You must first have nodejs and NPM installed on your system
 $ cd <project directory>  
 $ npm install  
 $ <node or nodejs> server.js   
+$ goto localhost:8081
 ```
