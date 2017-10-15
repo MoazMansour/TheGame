@@ -45,3 +45,13 @@ exports.md5 = function(request, response){
 	response.sendFile(__dirname + '/resources/templates/login/md5.js');
 	console.log("md5.js sent");
 }
+
+/*
+ * Sample Image route function
+ * send file param should point to file in our directory
+ */
+
+exports.urLogo = function(request, response) {
+	response.sendFile(__dirname + '/resources/images/urLogo.png');
+	console.log("img file sent");
+}
