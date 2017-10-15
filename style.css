@@ -13,7 +13,7 @@ html {
   position: absolute;
   top: 25%;
   left: 25%;
-  bottom: 25%;
+  bottom: 28%;
   right: 25%;
   background-color: rgba(0, 120, 255, 0.5);
   color: white;
@@ -75,4 +75,16 @@ button:hover {
 img {
   margin-right: 5px;
   margin-bottom: -1.5%;
+}
+
+.ext {
+  display: inline-block;
+  text-align: center;
+  margin-left: 15%;
+  margin-top: 3%;
+  color: grey;
+  margin-bottom: 0;
+}
+#ext_link {
+  color: white;
 }
