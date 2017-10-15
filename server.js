@@ -103,3 +103,9 @@ app.get('/index.html', routes.start)
 app.get('/game.js', routes.game)
 app.get('/style.css', routes.style)
 app.post('/username', routes.username)
+
+/*
+ * Sample Image route
+ * '/urlogo.png' should be the image src in the client side html
+ */
+app.get('/urlogo.png', routes.urLogo)
