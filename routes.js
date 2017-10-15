@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 
 //routes
 exports.home = function(request, response){
-	response.sendFile(__dirname + '/resources/templates/login/login.html');
+	response.sendFile(__dirname + '/resources/templates/game/login_2.html');
 	console.log("test.html sent");
 }
 
