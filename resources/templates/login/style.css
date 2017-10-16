@@ -1,0 +1,96 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background-image: url("images/Background.jpg");
+  background-position: center center fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+#Login_box {
+  position: absolute;
+  top: 25%;
+  left: 25%;
+  bottom: 28%;
+  right: 25%;
+  background-color: rgba(0, 120, 255, 0.5);
+  color: white;
+}
+
+h1 {
+  font-size: 65px;
+  font-weight: lighter;
+  font-family: "calibri";
+  color: white;
+  margin: 0;
+  margin-top: 2.5%;
+  margin-left: 2.5%;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+p {
+  font-size: 18px;
+  font-family: "calibri";
+  color: white;
+  margin-left: 3%;
+  margin-top: 0;
+  margin-bottom: 5%;
+}
+
+form {
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+input[type=text], input[type=password] {
+    font-size: 18px;
+    margin-left: 5%;
+    width: 80%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    margin-left: -1.5%;
+    font-size: 14px;
+    padding-top: 1.5%;
+    padding-bottom: 1.5%;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+img {
+  margin-right: 5px;
+  margin-bottom: -1.5%;
+}
+
+.ext {
+  display: inline-block;
+  text-align: center;
+  margin-left: 15%;
+  margin-top: 3%;
+  color: grey;
+  margin-bottom: 0;
+}
+
+#ext_link {
+  color: white;
+}
+
+canvas {
+    border: 1px solid #d3d3d3;
+    background-color: #f1f1f1;
+}

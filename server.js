@@ -46,7 +46,7 @@ io.on('connection', function (socket) {
 						console.log(rows.account_id + " " + rows.username + " " + rows.hash + " " + rows.salt);
 					})
 				});
-				
+
 			}
 		})
 	});
@@ -85,7 +85,7 @@ io.on('connection', function (socket) {
 db.serialize(function() {
 	db.run("DROP TABLE IF EXISTS users");
 	db.run("CREATE TABLE users (account_id, username TEXT, salt TEXT, hash TEXT)");
-	// db.run("INSERT INTO users VALUES (1, 'admin', 'today', 'abcdefg')");
+	//db.run("INSERT INTO users VALUES (1, 'admin', 'today', 'abcdefg')");
 	//
 	//
 	// db.each("SELECT account_id AS id, username FROM users", function(err, row) {
@@ -97,15 +97,17 @@ db.serialize(function() {
 
 //basic routes
 app.get('/', routes.home)
+app.get('/style.css', routes.style)
+app.get('/images/1.png', routes.img1)
+app.get('/images/2.png', routes.img2)
+app.get('/images/background.jpg', routes.background)
 app.get('/login.js', routes.login)
 app.get('/md5.js', routes.md5)
 app.get('/index.html', routes.start)
 app.get('/game.js', routes.game)
-app.get('/style.css', routes.style)
 app.post('/username', routes.username)
 
 /*
  * Sample Image route
  * '/urlogo.png' should be the image src in the client side html
  */
-app.get('/urlogo.png', routes.urLogo)
