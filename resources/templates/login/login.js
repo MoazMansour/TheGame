@@ -10,6 +10,17 @@ function init()
 	});
 }
 
+//$('#password').keypress(function(event) {
+//	var key = event.which;
+//	if(key == 13){
+//		signin();
+//	}
+//})
+
+$('#username').focus(function(){
+	$(this).css("background-color", "#cccccc");
+})
+
 
 function signin()
 {
@@ -27,12 +38,16 @@ function signin()
 				if(data == true) {
 					window.location = "index.html";
 				}
-				else
+				else {
 					alert("Incorrect Password!");
+					window.location.reload();
+				}
 			});
 		}
-		else
+		else {
 			alert("Username does not exist!");
+			window.location = "/";
+		}
 	});
 }
 
@@ -52,7 +67,9 @@ function signup()
 			alert("Account created successfully!");
 			window.location = "index.html";
 		}
-		else
+		else {
 			alert("Username already exists!");
+			window.location = "/";
+		}
 	});
 }
