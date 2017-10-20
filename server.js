@@ -81,7 +81,7 @@ io.on('connection', function (socket) {
 });
 
 
-
+// remove this function for persistant storage
 db.serialize(function() {
 	db.run("DROP TABLE IF EXISTS users");
 	db.run("CREATE TABLE users (account_id, username TEXT, salt TEXT, hash TEXT)");
@@ -96,6 +96,10 @@ db.serialize(function() {
 });
 
 //basic routes
+app.use(function (request, response, next) {
+	console.log("COOOKIE: " + request.headers.cookie);
+	next();
+})
 app.get('/', routes.home)
 app.get('/login.js', routes.login)
 app.get('/md5.js', routes.md5)
