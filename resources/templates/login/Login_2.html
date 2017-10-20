@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TheGame_Login</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="md5.js" type="text/javascript"></script> <!-- CRYPTOJS (NEW BSD LICENSE) -->
+  	<script src="login.js" type="text/javascript"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  </head>
+
+  <body onload="init()">
+    <div id = "Login_box">
+      <h1>The Game</h1>
+      <p>Welcome to the login page of the "The Game" your UR local game</p>
+    <form method="post" name="myform">
+      <img src = "images/1.png" alt = "usrname" height="35" width="35">
+      <input type="text" placeholder="Username" name="username" id="username" required>
+      <br>
+      <img src = "images/2.png" alt = "username" height="35" width="35">
+      <input type="password" placeholder="Password" name="password" id="password" required>
+      <br>
+      <input type="checkbox" name="RememberMe" value="RememberMe">Remember me
+      <br><br>
+      <button type="submit" onclick="signin()">Login</button>
+      <br>
+      <div class = "ext">
+        <a href="/localhost/Login.html" id="ext_link">Forget Password?</a>
+      </div>
+      <div class = "ext">
+        <a href="/localhost/Login.html" id="ext_link">Create New Account</a>
+        <button type="submit" onclick="signup()">Sign Up</button>
+      </div>
+    </form>
+  </div>
+  </body>
+</html>
