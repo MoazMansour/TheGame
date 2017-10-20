@@ -32,7 +32,7 @@ exports.img2 = function(request, response) {
 
 exports.background = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/login/images/background.jpg');
-	console.log("background.png sent");
+	console.log("background.jpg sent");
 }
 
 exports.login = function(request, response){
