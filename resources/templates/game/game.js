@@ -91,3 +91,8 @@ function logout() {
 }
 
 startGame();
+
+// Print cookie function
+// document.cookie.split(";").forEach( function (c) {
+//     console.log(c);
+// })

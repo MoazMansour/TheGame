@@ -15,6 +15,11 @@ function signin()
 {
 	username = document.getElementById("username").value;
 	password = document.getElementById("password").value;
+	hash = null;
+	var expireTime = new Date();
+	//set time to expire in 1 week
+	var time = expireTime.getTime() + 168 * 3600000;
+	expireTime.setTime(time);
 
 	socket.emit('send_user', username);
 	socket.on('get_timestamp', function (data) {
@@ -25,6 +30,7 @@ function signin()
 			socket.on('login_confirm', function (data) {
 				console.log(data);
 				if(data == true) {
+					document.cookie ="username=" + username + "hash=" + hash + ";Expires=" + expireTime.toGMTString() + ";"
 					window.location = "index.html";
 				}
 				else
