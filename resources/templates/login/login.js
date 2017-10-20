@@ -17,9 +17,9 @@ function init()
 //	}
 //})
 
-$('#username').focus(function(){
-	$(this).css("background-color", "#cccccc");
-})
+//$('#username').focus(function(){
+//	$(this).css("background-color", "#cccccc");
+//})
 
 
 function signin()
