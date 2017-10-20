@@ -67,5 +67,5 @@ function createCookie(username, hash) {
 	//set time to expire in 1 week
 	var time = expireTime.getTime() + 168 * 3600000;
 	expireTime.setTime(time);
-	document.cookie ="username=" + username + "hash=" + hash + ";Expires=" + expireTime.toGMTString() + ";"
+	document.cookie ="type=auth;username=" + username + ";hash=" + hash + ";Expires=" + expireTime.toGMTString() + ";"
 }
