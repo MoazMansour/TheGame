@@ -10,11 +10,17 @@ html {
 }
 
 #Login_box {
-  position: absolute;
-  top: 25%;
-  left: 25%;
-  bottom: 28%;
-  right: 25%;
+  margin: auto;
+  width: 50%;
+  background-color: rgba(0, 120, 255, 0.5);
+  color: white;
+  margin-top: 15%;
+}
+
+.container_box {
+  margin: auto;
+  width: 50%;
+  margin-top: 10%;
   background-color: rgba(0, 120, 255, 0.5);
   color: white;
 }
@@ -24,17 +30,21 @@ h1 {
   font-weight: lighter;
   font-family: "calibri";
   color: white;
-  margin: 0;
   margin-top: 2.5%;
-  margin-left: 2.5%;
+  margin-left: 3%;
   margin-bottom: 0;
   padding-bottom: 0;
+}
+
+h2 {
+	text-align: center;
 }
 
 p {
   font-size: 18px;
   font-family: "calibri";
   color: white;
+  width: 100%;
   margin-left: 3%;
   margin-top: 0;
   margin-bottom: 5%;
@@ -45,7 +55,7 @@ form {
   margin-right: 5%;
 }
 
-input[type=text], input[type=password] {
+input[type=text], input[type=password], input[type=firstname], input[type=lastname], input[type=email], input[type=telephone] {
     font-size: 18px;
     margin-left: 5%;
     width: 80%;
@@ -66,10 +76,18 @@ button {
     border: none;
     cursor: pointer;
     width: 100%;
+    margin-top: 1%;
 }
 
 button:hover {
     opacity: 0.8;
+}
+
+.cancelbtn {
+    width: 100%;
+    margin-top: 1.5%;
+    margin-bottom: 1%;
+    background-color: #f44336;
 }
 
 img {
@@ -83,7 +101,30 @@ img {
   margin-left: 15%;
   margin-top: 3%;
   color: grey;
-  margin-bottom: 0;
+  margin-bottom: 1%;
+}
+
+.header {
+  text-align: left;
+  width: 75%;
+}
+
+.imgcontainer {
+    margin-top: 5%;
+    text-align: center;
+    margin: 2.5%;
+
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+    span.psw {
+       display: block;
+       float: none;
+    }
+    .cancelbtn {
+       width: 100%;
+    }
 }
 
 #ext_link {
