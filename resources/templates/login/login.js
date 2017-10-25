@@ -51,6 +51,14 @@ function signin()
 	});
 }
 
+function goback() {
+	window.history.back();
+}
+
+function gohome() {
+	window.location = "/";
+}
+
 function signup()
 {
 	timeStamp = Date.now();

@@ -98,14 +98,20 @@ db.serialize(function() {
 //basic routes
 app.get('/', routes.home)
 app.get('/style.css', routes.style)
-app.get('/images/1.png', routes.img1)
-app.get('/images/2.png', routes.img2)
+app.get('/images/user.png', routes.usrimg)
+app.get('/images/key.png', routes.keyimg)
+app.get('/images/redo.png', routes.redoimg)
+app.get('/images/name.png', routes.nameimg)
+app.get('/images/mail.png', routes.mailimg)
+app.get('/images/lock.png', routes.lockimg)
+app.get('/images/avatar.png', routes.avatarimg)
 app.get('/images/background.jpg', routes.background)
 app.get('/login.js', routes.login)
 app.get('/md5.js', routes.md5)
 app.get('/index.html', routes.start)
 app.get('/game.js', routes.game)
 app.post('/username', routes.username)
+app.get('/signup.html', routes.signup)
 
 /*
  * Sample Image route

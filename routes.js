@@ -10,40 +10,73 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 //routes
+//--------------------------------------------------------------------------
+//Login page files:
 exports.home = function(request, response){
 	response.sendFile(__dirname + '/resources/templates/login/login.html');
-	console.log("test.html sent");
+	console.log("signup.html sent");
 }
 
-exports.style = function(request, response) {
-	response.sendFile(__dirname + '/resources/templates/login/style.css');
-	console.log("style.css sent");
+exports.usrimg = function(request, response) {
+	response.sendFile(__dirname + '/resources/templates/login/images/user.png');
+	console.log("user.png sent");
 }
 
-exports.img1 = function(request, response) {
-	response.sendFile(__dirname + '/resources/templates/login/images/1.png');
-	console.log("1.png sent");
+exports.keyimg = function(request, response) {
+	response.sendFile(__dirname + '/resources/templates/login/images/key.png');
+	console.log("key.png sent");
 }
 
-exports.img2 = function(request, response) {
-	response.sendFile(__dirname + '/resources/templates/login/images/2.png');
-	console.log("2.png sent");
+exports.redoimg = function(request, response) {
+	response.sendFile(__dirname + '/resources/templates/login/images/redo.png');
+	console.log("redo.png sent");
 }
 
-exports.background = function(request, response) {
-	response.sendFile(__dirname + '/resources/templates/login/images/background.jpg');
-	console.log("background.jpg sent");
+exports.nameimg = function(request, response) {
+	response.sendFile(__dirname + '/resources/templates/login/images/name.png');
+	console.log("name.png sent");
 }
 
+exports.mailimg = function(request, response) {
+	response.sendFile(__dirname + '/resources/templates/login/images/mail.png');
+	console.log("mail.png sent");
+}
+
+exports.lockimg = function(request, response) {
+	response.sendFile(__dirname + '/resources/templates/login/images/lock.png');
+	console.log("lock.png sent");
+}
+
+exports.avatarimg = function(request, response) {
+	response.sendFile(__dirname + '/resources/templates/login/images/avatar.png');
+	console.log("avatar.png sent");
+}
+
+//---------------------------
+
+//Login javascript code
 exports.login = function(request, response){
 	response.sendFile(__dirname + '/resources/templates/login/login.js');
 	console.log("login.js sent");
 }
 
+//Hashing algorithm
 exports.md5 = function(request, response){
 	response.sendFile(__dirname + '/resources/templates/login/md5.js');
 	console.log("md5.js sent");
 }
+
+//--------------------------------------------------------------------------
+//SignUp page files:
+
+exports.signup = function(request, response){
+	response.sendFile(__dirname + '/resources/templates/login/signup.html');
+	console.log("signup.html sent");
+}
+
+//---------------------------
+
+//The game homepage
 
 exports.start = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/game/index.html');
@@ -52,6 +85,19 @@ exports.start = function(request, response) {
 exports.game = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/game/game.js');
 	console.log("game.js sent");
+}
+
+//---------------------------
+//TheGame Common style file and background
+
+exports.style = function(request, response) {
+	response.sendFile(__dirname + '/resources/templates/login/style.css');
+	console.log("style.css sent");
+}
+
+exports.background = function(request, response) {
+	response.sendFile(__dirname + '/resources/templates/login/images/background.jpg');
+	console.log("background.jpg sent");
 }
 
 exports.username = function(request, response){
