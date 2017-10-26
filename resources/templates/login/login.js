@@ -46,7 +46,7 @@ function signin()
 		}
 		else {
 			alert("Username does not exist!");
-			window.location = "/";
+			window.location.reload();
 		}
 	});
 }
@@ -77,7 +77,7 @@ function signup()
 		}
 		else {
 			alert("Username already exists!");
-			window.location = "/";
+			window.location.reload();
 		}
 	});
 }
