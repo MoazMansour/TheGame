@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 //Login page files:
 exports.home = function(request, response){
 	response.sendFile(__dirname + '/resources/templates/login/login.html');
-	console.log("signup.html sent");
+	console.log("login.html sent");
 }
 
 exports.usrimg = function(request, response) {
