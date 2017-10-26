@@ -78,10 +78,21 @@ exports.signup = function(request, response){
 
 //The game homepage
 
+exports.salt = function(request, response) {
+	db.get("SELECT salt FROM users WHERE username = ?",[request.body.username], function(err, row){
+		if(err){
+		 	return console.log(err);
+		}
+		response.send({salt: row.salt});
+	});
+}
+
 exports.start = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/game/index.html');
 	console.log("index.html sent");
 }
+
+
 exports.game = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/game/game.js');
 	console.log("game.js sent");

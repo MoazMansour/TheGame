@@ -1,9 +1,11 @@
 //must have node JS setup on system
 var express = require('express');
-var app = express();
 var routes = require('./routes.js');
 var sqlite3 = require('sqlite3').verbose();
+var bodyParser = require('body-parser');
 var db = new sqlite3.Database('resources/database.db');
+var app = express();
+app.use(bodyParser.json());
 
 //creating server
 var server = app.listen(8081, function(){
@@ -14,78 +16,12 @@ var server = app.listen(8081, function(){
 })
 
 
-var io = require('socket.io')(server);
-console.log("socket");
-io.on('connection', function (socket) {
-	console.log("socket created");
-	// socket.emit('news', { hello: 'world' });
-	// socket.on('my other event', function (data) {
-  //   console.log(data.my);
-  // });
-  socket.on('signup', function(data){
-		//Check for existing username
-		db.get("SELECT username FROM users WHERE username = ?", [data.user], function(err, row){
-			if(err){
-				return console.log(err);
-			}
-			if(row != null){
-				socket.emit('signup_confirm', false);
-			}
-			//Creating new user
-			else {
-				db.get("SELECT Count(*) as user_count FROM users", function(err, row) {
-					db.run("INSERT INTO users VALUES(?, ?, ?, ?)", [row.user_count + 1, data.user, data.salt, data.hash], function(err){
-						if(err){
-							return console.log(err);
-						}
-						socket.emit('signup_confirm', true);
-						console.log( data.user +" added");
-					});
-					console.log("Current Table: ");
-					db.each("SELECT * FROM users", function(err, rows) {
-						console.log(rows.account_id + " " + rows.username + " " + rows.hash + " " + rows.salt);
-					})
-				});
-
-			}
-		})
-	});
-
-	socket.on('send_user', function(data){
-		db.get("SELECT salt, hash FROM users WHERE username = ?", [data], function(err, row) {
-			if(err) {
-				return console.log(err);
-			}
-			if(row != null) {
-				console.log("Salt sent: " + row.salt);
-				socket.emit('get_timestamp', {successful:true, salt: row.salt});
-			} else {
-				socket.emit('get_timestamp',{successful:false});
-			}
-
-			socket.on('send_hash', function(data) {
-				console.log('Stored hash: '+ row.hash + ' Recieved hash: '+data);
-				if(row.hash == data) {
-					socket.emit('login_confirm', true);
-					console.log('User Verified');
-				} else {
-					socket.emit('login_confirm', false);
-					console.log('User NOT Verified');
-				}
-			});
-
-		})
-	})
-
-
-});
-
 
 
 db.serialize(function() {
 	db.run("DROP TABLE IF EXISTS users");
 	db.run("CREATE TABLE users (account_id, username TEXT, salt TEXT, hash TEXT)");
-	//db.run("INSERT INTO users VALUES (1, 'admin', 'today', 'abcdefg')");
+	db.run("INSERT INTO users VALUES (1, 'admin', 'today', 'abcdefg')");
 	//
 	//
 	// db.each("SELECT account_id AS id, username FROM users", function(err, row) {
@@ -112,7 +48,7 @@ app.get('/index.html', routes.start)
 app.get('/game.js', routes.game)
 app.post('/username', routes.username)
 app.get('/signup.html', routes.signup)
-
+app.post('/getSalt', routes.salt)
 /*
  * Sample Image route
  * '/urlogo.png' should be the image src in the client side html
