@@ -22,15 +22,18 @@ app.use("/", function(request, response, next){
 	db.get("SELECT username FROM users WHERE sessionID = ?",[request.session.id], function(err,row){
 		if(row == null){
 			if(request.url == '/'){
-				response.writeHead(301, {Location: 'localhost:8081/login.html'});
-				response.end();
+				response.redirect('/login.html');
 			}
 			else{
 				next();
 			}
 		}
-		else{
-			next();
+		else {
+			if(request.url == '/login.html' || request.url == '/signup.html') {
+				response.redirect('/');
+			} else {
+				next();
+			}
 		}
 	});
 	
@@ -77,13 +80,15 @@ app.get('/login.html', routes.login)
 app.get('/game.js', routes.game)
 app.post('/username', routes.username)
 app.get('/signup.html', routes.signup)
+
 app.post('/logout', function(request,response){
-	db.run("UPDATE useres SET sessoionID = ? WHERE sessionID = ?",["loggedout", request.session.id], function(err){
+	db.run("UPDATE users SET sessionID = ? WHERE sessionID = ?", ["loggedout", request.session.id], function(err){
 		if(err){
 			console.log(err);
 			response.sendStatus(500);
 		}
 		else{
+			console.log("User Logged out");
 			response.sendStatus(200);
 		}
 		
@@ -142,7 +147,7 @@ app.post('/signUp', function(request, response) {
 						return console.log(err);
 					else
 						saveLogin(request.session.id, request.body.username);
-						response.send({ redirect: '/index.html' });
+						response.send({ redirect: '/' });
 						console.log("USER ADDED");
 						db.each("SELECT * from users", function(err, row){
 							console.log(row.username + " " + row.salt + " " + row.hash+ " " + row.sessionID);

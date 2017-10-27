@@ -96,7 +96,8 @@ function logout() {
             window.location = "/login.html";
         }
         else{
-            alert("you can never leave");
+            console.log("log out error");
+            // alert("you can never leave");
         }
     }
     
