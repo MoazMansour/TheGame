@@ -1,3 +1,5 @@
+
+
 function signin() {
     username = document.getElementById("username").value;
     password = document.getElementById("password").value;
@@ -27,26 +29,26 @@ function signin() {
             xhr1.open("POST", url1, true);
             xhr1.setRequestHeader("Content-type", "application/json");
             xhr1.send(data1);
-			
+
 			//CALLBACK FUNCTION ONCE THE "GETSALT" REQUEST HAS BEEN SERVICED
 			xhr1.onreadystatechange = function () {
 				if (xhr1.readyState === 4 && xhr1.status === 200) {
 					console.log("User Aunthenticated.");
-					//RETURN WITH HTML PAGE   
-					window.location = JSON.parse(xhr1.response).redirect        
+					//RETURN WITH HTML PAGE
+					window.location = JSON.parse(xhr1.response).redirect
 				}
 				else if (xhr1.readyState === 4 && xhr1.status === 404)
 					alert("Incorrect Password!");
 			};
-		
+
 		}
         else if (xhr.readyState === 4 && xhr.status === 404)
             alert("Username does not exist!");
 
-    
-            
+
+
     }
-};    
+};
 
 function goback() {
     window.history.back();
@@ -60,30 +62,29 @@ function signup() {
     timeStamp = Date.now();
     password = document.getElementById("password").value;
     passWordCheck = document.getElementById("re-password").value;
-    
+
     if (password == passWordCheck) {
         user = document.getElementById("username").value,
         hash = String(CryptoJS.MD5(password + timeStamp)),
         salt = String(timeStamp)
-        
+
         var xhr = new XMLHttpRequest();
         var url = "signUp";
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-type", "application/json");
-        
+
         var data = JSON.stringify({ "username": user, "hash": hash, "salt": salt });
         xhr.send(data);
-        
+
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 console.log("New User Created.");
 				alert("Account created successfully.");
-				//RETURN WITH HTML PAGE           
-				
 				window.location = JSON.parse(xhr.response).redirect
             }
-            else if (xhr.readyState === 4 && xhr.status === 404)
+            else if (xhr.readyState === 4 && xhr.status === 404) {
                 alert("User already exists.");
+              }
         };
     }
     else {
