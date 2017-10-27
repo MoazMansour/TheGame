@@ -32,8 +32,8 @@ function signin() {
 			xhr1.onreadystatechange = function () {
 				if (xhr1.readyState === 4 && xhr1.status === 200) {
 					console.log("User Aunthenticated.");
-					console.log("res" + xhr1.responseText);
-					//RETURN WITH HTML PAGE           
+					//RETURN WITH HTML PAGE   
+					window.location = JSON.parse(xhr1.response).redirect        
 				}
 				else if (xhr1.readyState === 4 && xhr1.status === 404)
 					alert("Incorrect Password!");

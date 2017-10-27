@@ -68,9 +68,8 @@ app.post('/login', function(request, response) {
 			return console.log(err);
 		}
 		if(row.hash == request.body.hash) {
-			response.redirect('index.html');
-			// response.sendFile("_dirname + '/resources/templates/game/index.html'");
 			console.log("User authenticated");
+			response.send({ redirect: '/index.html' });	
 		}
 		else {
 			response.send(404);
