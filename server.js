@@ -8,7 +8,7 @@ var session = require('express-session');
 var sqlite3Store = require('connect-sqlite3')(session);
 var app = express();
 var sessionStore = new sqlite3Store({dir: "resources/",db: "sessionsDB",table:"session"});
-var sessionDB = new sqlite3.Database('resources/sessionsDB');
+var sessionDB = new sqlite3.Database('resources/sessionsDB.db');
 app.use(bodyParser.json());
 
 app.use(session({
@@ -23,8 +23,8 @@ app.use("/", function(request, response, next){
 	db.get("SELECT username FROM users WHERE sessionID = ?",[request.session.id], function(err,row){
 		if(row == null){
 			if(request.url == '/'){
-			response.writeHead(301, {Location: 'localhost:8081/login.html'});
-			response.end();
+				response.writeHead(301, {Location: 'localhost:8081/login.html'});
+				response.end();
 			}
 			else{
 				next();
