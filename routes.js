@@ -1,5 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+// var sqlite3 = require('sqlite3').verbose();
+// var db = new sqlite3.Database('resources/database.db');
 
 var app = express();
 var server = require('http').Server(app);
@@ -78,14 +80,30 @@ exports.signup = function(request, response){
 
 //The game homepage
 
-exports.salt = function(request, response) {
-	db.get("SELECT salt FROM users WHERE username = ?",[request.body.username], function(err, row){
-		if(err){
-		 	return console.log(err);
-		}
-		response.send({salt: row.salt});
-	});
-}
+// exports.salt = function(request, response) {
+// 	db.get("SELECT salt FROM users WHERE username = ?",[request.body.username], function(err, row){
+// 		if(err){
+// 		 	return console.log(err);
+// 		}
+// 		response.send({salt: row.salt});
+// 	});
+// }
+// exports.login = function(request, response){
+// 	db.get("SELECT username, hash FROM users WHERE username = ?", [request.body.username],function(err, row){
+// 		if(err){
+// 			return console.log(err);
+// 		}
+// 		if(row.hash == request.body.hash){
+// 			response.sendFile("_dirname + '/resources/templates/game/index.html'");
+// 			console.log("User authenticated");
+// 		}
+// 		else{
+// 			response.send(404);
+// 			console.log("User authentication FAILED");
+// 		}
+
+// 	});
+// }
 
 exports.start = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/game/index.html');

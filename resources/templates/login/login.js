@@ -30,18 +30,18 @@ function signin() {
         }
         else if (xhr.readyState === 4 && xhr.status === 404)
             alert("Username does not exist!");
-    };
 
     //CALLBACK FUNCTION ONCE THE "GETSALT" REQUEST HAS BEEN SERVICED
-    xhr1.onreadystatechange = function () {
-        if (xhr1.readyState === 4 && xhr1.status === 200) {
-            console.log("User Aunthenticated.");
-            //RETURN WITH HTML PAGE           
-        }
-        else if (xhr1.readyState === 4 && xhr1.status === 404)
-            alert("Incorrect Password!");
-    };
-}
+            xhr1.onreadystatechange = function () {
+            if (xhr1.readyState === 4 && xhr1.status === 200) {
+                console.log("User Aunthenticated.");
+                //RETURN WITH HTML PAGE           
+            }
+            else if (xhr1.readyState === 4 && xhr1.status === 404)
+                alert("Incorrect Password!");
+        };
+    }
+};    
 
 function goback() {
     window.history.back();
@@ -66,7 +66,7 @@ function signup() {
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-type", "application/json");
         
-        var data = JSON.stringify({ "username": username, "hash": hash, "salt": salt });
+        var data = JSON.stringify({ "username": user, "hash": hash, "salt": salt });
         xhr.send(data);
         
         xhr.onreadystatechange = function () {

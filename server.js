@@ -1,8 +1,8 @@
 //must have node JS setup on system
 var express = require('express');
 var routes = require('./routes.js');
-var sqlite3 = require('sqlite3').verbose();
 var bodyParser = require('body-parser');
+var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('resources/database.db');
 var app = express();
 app.use(bodyParser.json());
@@ -17,11 +17,10 @@ var server = app.listen(8081, function(){
 
 
 
-
 db.serialize(function() {
 	db.run("DROP TABLE IF EXISTS users");
 	db.run("CREATE TABLE users (account_id, username TEXT, salt TEXT, hash TEXT)");
-	db.run("INSERT INTO users VALUES (1, 'admin', 'today', 'abcdefg')");
+	//db.run("INSERT INTO users VALUES (1, 'admin', 'today', 'abcdefg')");
 	//
 	//
 	// db.each("SELECT account_id AS id, username FROM users", function(err, row) {
@@ -44,11 +43,55 @@ app.get('/images/avatar.png', routes.avatarimg)
 app.get('/images/background.jpg', routes.background)
 app.get('/login.js', routes.login)
 app.get('/md5.js', routes.md5)
-app.get('/index.html', routes.start)
+//app.get('/index.html', routes.start)
 app.get('/game.js', routes.game)
 app.post('/username', routes.username)
 app.get('/signup.html', routes.signup)
-app.post('/getSalt', routes.salt)
+
+
+app.post('/getSalt', function(request, response) {
+	console
+	db.get("SELECT salt FROM users WHERE username = ?",[request.body.username], function(err, row){
+		if(err){
+			console.log("ERROR!!");
+		 	return console.log(err);
+		}
+		console.log("salt here : "+ row.salt);
+		response.send({salt: row.salt});
+	});
+})
+
+
+app.post('/login', function(request, response){
+	db.get("SELECT username, hash FROM users WHERE username = ?", [request.body.username],function(err, row){
+		if(err){
+			return console.log(err);
+		}
+		if(row.hash == request.body.hash){
+			response.sendFile("_dirname + '/resources/templates/game/index.html'");
+			console.log("User authenticated");
+		}
+		else{
+			response.send(404);
+			console.log("User authentication FAILED");
+		}
+
+	});
+})
+
+app.post('/signUp', function(request, response){
+	db.run("INSERT INTO users VALUES(?, ?, ?, ?)", [1, request.body.username, request.body.salt, request.body.hash], function(err){
+	console.log(request.body);	
+		if(err)
+			return console.log(err);
+		else
+			console.log("USER ADDED");
+			db.each("SELECT * from users", function(err, row){
+				console.log(row.username + " " + row.salt + " " + row.hash);
+			}); 
+	});
+})
+
 /*
  * Sample Image route
  * '/urlogo.png' should be the image src in the client side html
