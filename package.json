@@ -5,7 +5,9 @@
   "main": "server.js",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "connect-sqlite3": "^0.9.10",
     "express": "^4.16.2",
+    "express-session": "^1.15.6",
     "socket.io": "^2.0.3",
     "sqlite": "^2.8.0",
     "sqlite3": "^3.1.13"

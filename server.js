@@ -4,8 +4,32 @@ var routes = require('./routes.js');
 var bodyParser = require('body-parser');
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('resources/database.db');
+var session = require('express-session');
+var sqlite3Store = require('connect-sqlite3')(session);
 var app = express();
+var sessionStore = new sqlite3Store({dir: "resources/",db: "sessionsDB",table:"session"});
+var sessionDB = new sqlite3.Database('resources/sessionsDB');
 app.use(bodyParser.json());
+
+app.use(session({
+	secret: "Rondom",
+	resave: true,
+	saveUninitialized: true,
+	store: sessionStore 
+}))
+
+app.use("/", function(request, response, next){
+	console.log("Middelware working");
+	// db.get("SELECT username FROM users WHERE sessionID = ?",[request.session.id], function(err,row){
+	// 	if(row == null)
+	// 		response.sendStatus(401);
+	// });
+	
+	next();
+	// sessionDB.each("SELECT * from session", function(err, rows){
+	// 	console.log(rows);
+//	}) 
+});
 
 //creating server
 var server = app.listen(8081, function(){
@@ -19,7 +43,7 @@ var server = app.listen(8081, function(){
 
 db.serialize(function() {
 	db.run("DROP TABLE IF EXISTS users");
-	db.run("CREATE TABLE users (account_id, username TEXT, salt TEXT, hash TEXT)");
+	db.run("CREATE TABLE users (account_id, username TEXT, salt TEXT, hash TEXT, sessionID TEXT)");
 	//db.run("INSERT INTO users VALUES (1, 'admin', 'today', 'abcdefg')");
 	//
 	//
@@ -75,6 +99,7 @@ app.post('/login', function(request, response) {
 		}
 		if(row.hash == request.body.hash) {
 			console.log("User authenticated");
+			saveLogin(request.session.id, request.body.username);
 			response.send({ redirect: '/index.html' });	
 		}
 		else {
@@ -94,15 +119,16 @@ app.post('/signUp', function(request, response) {
 			// Handle response that username exists
 			response.sendStatus(404);
 		} else {
-			db.run("INSERT INTO users VALUES(?, ?, ?, ?)", [1, request.body.username, request.body.salt, request.body.hash], function(err) {
+			db.run("INSERT INTO users VALUES(?, ?, ?, ?, ?)", [1, request.body.username, request.body.salt, request.body.hash, ""], function(err) {
 				console.log(request.body);	
 					if(err)
 						return console.log(err);
 					else
+						saveLogin(request.session.id, request.body.username);
 						response.send({ redirect: '/index.html' });
 						console.log("USER ADDED");
 						db.each("SELECT * from users", function(err, row){
-							console.log(row.username + " " + row.salt + " " + row.hash);
+							console.log(row.username + " " + row.salt + " " + row.hash+ " " + row.sessionID);
 						}); 
 				});
 		}
@@ -111,6 +137,12 @@ app.post('/signUp', function(request, response) {
 	
 })
 
+function saveLogin (sid, username){
+	db.run("UPDATE users SET sessionID = ? WHERE username = ?",[sid, username], function(err){
+		if(err)
+			return console.log(err);
+	} )
+}
 /*
  * Sample Image route
  * '/urlogo.png' should be the image src in the client side html
