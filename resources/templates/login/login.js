@@ -24,22 +24,27 @@ function signin() {
             var xhr1 = new XMLHttpRequest();
             var url1 = "login";
             var data1 = JSON.stringify({ "username": username, "hash": hash });
-            xhr1.open("POST", url, true);
+            xhr1.open("POST", url1, true);
             xhr1.setRequestHeader("Content-type", "application/json");
             xhr1.send(data1);
-        }
+			
+			//CALLBACK FUNCTION ONCE THE "GETSALT" REQUEST HAS BEEN SERVICED
+			xhr1.onreadystatechange = function () {
+				if (xhr1.readyState === 4 && xhr1.status === 200) {
+					console.log("User Aunthenticated.");
+					console.log("res" + xhr1.responseText);
+					//RETURN WITH HTML PAGE           
+				}
+				else if (xhr1.readyState === 4 && xhr1.status === 404)
+					alert("Incorrect Password!");
+			};
+		
+		}
         else if (xhr.readyState === 4 && xhr.status === 404)
             alert("Username does not exist!");
 
-    //CALLBACK FUNCTION ONCE THE "GETSALT" REQUEST HAS BEEN SERVICED
-            xhr1.onreadystatechange = function () {
-            if (xhr1.readyState === 4 && xhr1.status === 200) {
-                console.log("User Aunthenticated.");
-                //RETURN WITH HTML PAGE           
-            }
-            else if (xhr1.readyState === 4 && xhr1.status === 404)
-                alert("Incorrect Password!");
-        };
+    
+            
     }
 };    
 
@@ -48,7 +53,7 @@ function goback() {
 }
 
 function gohome() {
-    window.location = "/";
+    window.location = "/index.html";
 }
 
 function signup() {
@@ -72,8 +77,9 @@ function signup() {
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 console.log("New User Created.");
-                alert("Account created successfully.");
-                //RETURN WITH HTML PAGE           
+				alert("Account created successfully.");
+				//RETURN WITH HTML PAGE           
+				gohome();
             }
             else if (xhr.readyState === 4 && xhr.status === 404)
                 alert("User already exists.");
@@ -81,6 +87,6 @@ function signup() {
     }
     else {
         alert("Passwords do not match!");
-        window.location.reload();
+        // window.location.reload();
     }
 }
