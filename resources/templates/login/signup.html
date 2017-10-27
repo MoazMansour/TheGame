@@ -3,9 +3,22 @@
   <head>
     <title>TheGame_Signup</title>
     <link rel="stylesheet" href="style.css">
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="login.js" type="text/javascript"></script>
     <script src="md5.js" type="text/javascript"></script> <!-- CRYPTOJS (NEW BSD LICENSE) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+    <script>
+      $(document).ready(function() {
+          console.log("jQuery Loaded");
+          $('#email').keypress(function(event) {
+              var key = event.which;
+              if(key == 13) {
+                  signup();
+              }
+          });
+      });
+    </script>
+
   </head>
 
   <body>
@@ -32,10 +45,10 @@
         <input type="password" placeholder="Re-type Password" name="re-password" id="re-password" required>
         <br>
         <img src = "images/name.png" alt = "Name" height="35" width="35">
-        <input type="text" placeholder="Full Name" name="Name" id="name">
+        <input type="text" placeholder="Full Name" name="Name" id="name" required>
         <br>
         <img src = "images/mail.png" alt = "email" height="35" width="35">
-        <input type="email" placeholder="E-mail Address" name="email" id="email">
+        <input type="email" placeholder="E-mail Address" name="email" id="email" required>
         <br>
         <input type="checkbox" name="RememberMe" value="RememberMe">Remember me
         <br>
