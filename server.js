@@ -56,8 +56,14 @@ app.post('/getSalt', function(request, response) {
 			console.log("ERROR!!");
 		 	return console.log(err);
 		}
-		console.log("salt here : "+ row.salt);
-		response.send({salt: row.salt});
+		if(row != null ){
+			console.log("salt here : "+ row.salt);
+			response.send({salt: row.salt});
+		}
+		else{
+			console.log("Username does not exist");
+			response.sendStatus(404);
+		}
 	});
 })
 
