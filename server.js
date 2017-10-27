@@ -62,17 +62,17 @@ app.post('/getSalt', function(request, response) {
 })
 
 
-app.post('/login', function(request, response){
+app.post('/login', function(request, response) {
 	db.get("SELECT username, hash FROM users WHERE username = ?", [request.body.username],function(err, row){
-		if(err){
+		if(err) {
 			return console.log(err);
 		}
-		if(row.hash == request.body.hash){
+		if(row.hash == request.body.hash) {
 			response.redirect('index.html');
 			// response.sendFile("_dirname + '/resources/templates/game/index.html'");
 			console.log("User authenticated");
 		}
-		else{
+		else {
 			response.send(404);
 			console.log("User authentication FAILED");
 		}
@@ -80,12 +80,12 @@ app.post('/login', function(request, response){
 	});
 })
 
-app.post('/signUp', function(request, response){
+app.post('/signUp', function(request, response) {
 	db.get("SELECT username FROM users WHERE username = ?", [request.body.username], function(err, row) {
-		if(err){
+		if(err) {
 			return console.log(err);
 		}
-		if(row != null){
+		if(row != null) {
 			// Handle response that username exists
 		} else {
 			db.run("INSERT INTO users VALUES(?, ?, ?, ?)", [1, request.body.username, request.body.salt, request.body.hash], function(err) {
@@ -93,6 +93,7 @@ app.post('/signUp', function(request, response){
 					if(err)
 						return console.log(err);
 					else
+						response.send({ redirect: '/index.html' });
 						console.log("USER ADDED");
 						db.each("SELECT * from users", function(err, row){
 							console.log(row.username + " " + row.salt + " " + row.hash);

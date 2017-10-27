@@ -79,7 +79,8 @@ function signup() {
                 console.log("New User Created.");
 				alert("Account created successfully.");
 				//RETURN WITH HTML PAGE           
-				gohome();
+				
+				window.location = JSON.parse(xhr.response).redirect
             }
             else if (xhr.readyState === 4 && xhr.status === 404)
                 alert("User already exists.");
