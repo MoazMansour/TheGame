@@ -57,7 +57,7 @@ exports.avatarimg = function(request, response) {
 //---------------------------
 
 //Login javascript code
-exports.login = function(request, response){
+exports.loginjs = function(request, response){
 	response.sendFile(__dirname + '/resources/templates/login/login.js');
 	console.log("login.js sent");
 }
@@ -106,7 +106,7 @@ exports.signup = function(request, response){
 // }
 
 exports.login = function(request, response) {
-	response.sendFile(__dirname + '/resources/templates/resources/login/login.html');
+	response.sendFile(__dirname + '/resources/templates/login/login.html');
 	console.log("login.html sent");
 }
 

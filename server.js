@@ -19,16 +19,23 @@ app.use(session({
 }))
 
 app.use("/", function(request, response, next){
-	console.log("Middelware working");
-	// db.get("SELECT username FROM users WHERE sessionID = ?",[request.session.id], function(err,row){
-	// 	if(row == null)
-	// 		response.sendStatus(401);
-	// });
+	console.log(request.url);
+	db.get("SELECT username FROM users WHERE sessionID = ?",[request.session.id], function(err,row){
+		if(row == null){
+			if(request.url == '/'){
+			response.writeHead(301, {Location: 'localhost:8081/login.html'});
+			response.end();
+			}
+			else{
+				next();
+			}
+		}
+		else{
+			next();
+		}
+	});
 	
-	next();
-	// sessionDB.each("SELECT * from session", function(err, rows){
-	// 	console.log(rows);
-//	}) 
+	
 });
 
 //creating server
@@ -65,7 +72,7 @@ app.get('/images/mail.png', routes.mailimg)
 app.get('/images/lock.png', routes.lockimg)
 app.get('/images/avatar.png', routes.avatarimg)
 app.get('/images/background.jpg', routes.background)
-app.get('/login.js', routes.login)
+app.get('/login.js', routes.loginjs)
 app.get('/md5.js', routes.md5)
 app.get('/login.html', routes.login)
 app.get('/game.js', routes.game)
@@ -111,7 +118,7 @@ app.post('/login', function(request, response) {
 		if(row.hash == request.body.hash) {
 			console.log("User authenticated");
 			saveLogin(request.session.id, request.body.username);
-			response.send({ redirect: '/index.html' });	
+			response.send({ redirect: '/' });	
 		}
 		else {
 			response.send(404);
