@@ -92,6 +92,7 @@ app.post('/signUp', function(request, response) {
 		}
 		if(row != null) {
 			// Handle response that username exists
+			response.sendStatus(404);
 		} else {
 			db.run("INSERT INTO users VALUES(?, ?, ?, ?)", [1, request.body.username, request.body.salt, request.body.hash], function(err) {
 				console.log(request.body);	
