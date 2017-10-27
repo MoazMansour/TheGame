@@ -15,8 +15,8 @@ app.use(bodyParser.json());
 //--------------------------------------------------------------------------
 //Login page files:
 exports.home = function(request, response){
-	response.sendFile(__dirname + '/resources/templates/login/login.html');
-	console.log("login.html sent");
+	response.sendFile(__dirname + '/resources/templates/game/index.html');
+	console.log("index.html sent");
 }
 
 exports.usrimg = function(request, response) {
@@ -105,9 +105,9 @@ exports.signup = function(request, response){
 // 	});
 // }
 
-exports.start = function(request, response) {
-	response.sendFile(__dirname + '/resources/templates/game/index.html');
-	console.log("index.html sent");
+exports.login = function(request, response) {
+	response.sendFile(__dirname + '/resources/templates/resources/login/login.html');
+	console.log("login.html sent");
 }
 
 

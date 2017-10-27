@@ -87,7 +87,19 @@ function collision(x, y, width, height, building) {
 }
 
 function logout() {
-    window.location = "/";
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "logout", true);
+    xhr.send();
+
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState === 4 && xhr.status == 200){
+            window.location = "/login.html";
+        }
+        else{
+            alert("you can never leave");
+        }
+    }
+    
 }
 
 startGame();

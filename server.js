@@ -67,11 +67,22 @@ app.get('/images/avatar.png', routes.avatarimg)
 app.get('/images/background.jpg', routes.background)
 app.get('/login.js', routes.login)
 app.get('/md5.js', routes.md5)
-app.get('/index.html', routes.start)
+app.get('/login.html', routes.login)
 app.get('/game.js', routes.game)
 app.post('/username', routes.username)
 app.get('/signup.html', routes.signup)
-
+app.post('/logout', function(request,response){
+	db.run("UPDATE useres SET sessoionID = ? WHERE sessionID = ?",["loggedout", request.session.id], function(err){
+		if(err){
+			console.log(err);
+			response.sendStatus(500);
+		}
+		else{
+			response.sendStatus(200);
+		}
+		
+	})
+})
 
 app.post('/getSalt', function(request, response) {
 	console
@@ -143,6 +154,8 @@ function saveLogin (sid, username){
 			return console.log(err);
 	} )
 }
+
+
 /*
  * Sample Image route
  * '/urlogo.png' should be the image src in the client side html
