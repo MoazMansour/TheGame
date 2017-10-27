@@ -7,8 +7,7 @@ var db = new sqlite3.Database('resources/database.db');
 var session = require('express-session');
 var sqlite3Store = require('connect-sqlite3')(session);
 var app = express();
-var sessionStore = new sqlite3Store({dir: "resources/",db: "sessionsDB",table:"session"});
-var sessionDB = new sqlite3.Database('resources/sessionsDB.db');
+var sessionStore = new sqlite3Store({dir: "resources/",db: "sessionsDB.db",table:"session"});
 app.use(bodyParser.json());
 
 app.use(session({
