@@ -13,9 +13,10 @@ app.use(bodyParser.json());
 app.use(session({
 	secret: "Rondom",
 	resave: true,
-	saveUninitialized: true,
-	store: sessionStore 
-}))
+	saveUninitialized: false,
+	store: sessionStore,
+	cookie: { maxAge: 20*60*1000 } 
+}));
 
 app.use("/", function(request, response, next){
 	console.log(request.url);
