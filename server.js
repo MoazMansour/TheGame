@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 app.use(session({
 	secret: "Rondom",
 	resave: true,
-	saveUninitialized: false,
+	saveUninitialized: true,
 	store: sessionStore,
 	cookie: { maxAge: 20*60*1000 } 
 }));
@@ -24,6 +24,8 @@ app.use("/", function(request, response, next){
 		if(row == null){
 			if(request.url == '/'){
 				response.redirect('/login.html');
+				console.log("Cookie not found");
+				console.log(request.session.id);
 			}
 			else{
 				next();
