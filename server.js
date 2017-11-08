@@ -170,7 +170,11 @@ function saveLogin (sid, username){
 }
 
 
-/*
- * Sample Image route
- * '/urlogo.png' should be the image src in the client side html
- */
+// GAME SOCKET STUFF BELOW HERE 
+// (eventually move to another file)
+
+var io = require('socket.io')(server);
+io.on('connection', function (socket) {
+	console.log("----SOCKET CREATED----");
+	io.emit('join', "You have successfully joined");
+})
