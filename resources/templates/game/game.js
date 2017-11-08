@@ -1,8 +1,15 @@
 var keys = [];
 var objects = [];
 var myPlayer;
+var socket;
 
 function startGame() {
+    socket = io.connect('http://localhost:8081');
+    socket.on('join', function (data) {
+        console.log("server confirm joined");
+        //retrieve data about buildings
+        //emit my location? unless set by server
+    });
     myPlayer = new player(20, 20, "red", 250, 200);
     objects[0] = new building(150, 70, 200, 50);
     map.start();
