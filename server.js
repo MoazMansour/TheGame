@@ -176,5 +176,13 @@ function saveLogin (sid, username){
 var io = require('socket.io')(server);
 io.on('connection', function (socket) {
 	console.log("----SOCKET CREATED----");
-	io.emit('join', "You have successfully joined");
+	// QUERY DATABASE FOR BUILDINGS AND OBJECTS
+	socket.emit('join', "You have successfully joined");
+	
+	socket.on('updatePlayerLoc', function(data) {
+		// console.log(data)
+		// Save player info in DB or maintain local list?
+		// Data recieved is in format {x: <int x>, y: <int y>}
+	})
 })
+

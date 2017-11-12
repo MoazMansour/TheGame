@@ -1,4 +1,5 @@
 var keys = [];
+var buildings = [];
 var objects = [];
 var myPlayer;
 var socket;
@@ -7,11 +8,11 @@ function startGame() {
     socket = io.connect('http://localhost:8081');
     socket.on('join', function (data) {
         console.log("server confirm joined");
-        //retrieve data about buildings
-        //emit my location? unless set by server
+        // retrieve data about buildings
+        // emit my start location? unless set by server
     });
     myPlayer = new player(20, 20, "red", 250, 200);
-    objects[0] = new building(150, 70, 200, 50);
+    buildings[0] = new building(150, 70, 200, 50);
     map.start();
 }
 
@@ -36,6 +37,7 @@ var map = {
 }
 
 function player(width, height, color, x, y) {
+    this.userName = "username";
     this.width = width;
     this.height = height;
     this.x = x;
@@ -47,8 +49,8 @@ function player(width, height, color, x, y) {
         if(keys[65] && !this.collisionCheck(this.x - 1, this.y, this.width, this.height)) this.x -= 1;
     }
     this.collisionCheck = function(x, y, t, h) {
-        for (var i = 0, len = objects.length; i < len; i++) {
-            if(collision(x, y, t, h, objects[i])) {
+        for (var i = 0, len = buildings.length; i < len; i++) {
+            if(collision(x, y, t, h, buildings[i])) {
                 return true;
             }
         }
@@ -58,6 +60,10 @@ function player(width, height, color, x, y) {
         ctx = map.context;
         ctx.fillStyle = color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+
+    this.sendLocation = function() {
+        socket.emit('updatePlayerLoc', {x: this.x, y: this.y});
     }
 }
 
@@ -77,9 +83,10 @@ function updateGame() {
     map.clear();
     myPlayer.move();
     myPlayer.update();
-    for (var i = 0, len = objects.length; i < len; i++) {
-       objects[i].update();
+    for (var i = 0, len = buildings.length; i < len; i++) {
+       buildings[i].update();
     }
+    myPlayer.sendLocation();
 }
 
 function collision(x, y, width, height, building) {
