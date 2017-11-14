@@ -1,7 +1,8 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-// var sqlite3 = require('sqlite3').verbose();
-// var db = new sqlite3.Database('resources/database.db');
+var sqlite3 = require('sqlite3').verbose();
+var db = new sqlite3.Database('resources/database.db');
+var shortId = require('shortid');
 
 var app = express();
 var server = require('http').Server(app);
@@ -13,7 +14,102 @@ app.use(bodyParser.json());
 
 //routes
 //--------------------------------------------------------------------------
+exports.logout = function(request,response){
+	db.run("UPDATE users SET sessionID = ? WHERE sessionID = ?", ["loggedout", request.session.id], function(err){
+		if(err){
+			console.log(err);
+			response.sendStatus(500);
+		}
+		else{
+			console.log("User Logged out");
+			response.sendStatus(200);
+		}
+		
+	})
+}
+
+exports.getSalt = function(request, response) {
+	console
+	db.get("SELECT salt FROM users WHERE username = ?",[request.body.username], function(err, row){
+		if(err){
+			console.log("ERROR!!");
+		 	return console.log(err);
+		}
+		if(row != null ){
+			console.log("salt here : "+ row.salt);
+			response.send({salt: row.salt});
+		}
+		else{
+			console.log("Username does not exist");
+			response.sendStatus(404);
+		}
+	});
+}
+
+exports.loginPost = function(request, response) {
+	db.get("SELECT username, hash FROM users WHERE username = ?", [request.body.username],function(err, row){
+		if(err) {
+			return console.log(err);
+		}
+		if(row.hash == request.body.hash) {
+			console.log("User authenticated");
+			saveLogin(request.session.id, request.body.username);
+			response.send({ redirect: '/' });	
+		}
+		else {
+			response.send(404);
+			console.log("User authentication FAILED");
+		}
+
+	});
+}
+
+exports.signupPost = function(request, response) {
+	db.get("SELECT username FROM users WHERE username = ?", [request.body.username], function(err, row) {
+		if(err) {
+			return console.log(err);
+		}
+		if(row != null) {
+			// Handle response that username exists
+			response.sendStatus(404);
+		} else {
+			db.run("INSERT INTO users VALUES(?, ?, ?, ?, ?)", [shortId.generate(), request.body.username, request.body.salt, request.body.hash, ""], function(err) {
+				console.log(request.body);	
+					if(err)
+						return console.log(err);
+					else
+						saveLogin(request.session.id, request.body.username);
+						response.send({ redirect: '/' });
+						console.log("USER ADDED");
+						db.each("SELECT * from users", function(err, row){
+							console.log("Username: " + row.username + " Account ID: "+row.account_id+" Salt: " + row.salt + " Hash: " + row.hash+ " Session ID: " + row.sessionID);
+						}); 
+				});
+		}
+	});
+
+	
+}
+
+function saveLogin (sid, username){
+	db.run("UPDATE users SET sessionID = ? WHERE username = ?",[sid, username], function(err){
+		if(err)
+			return console.log(err);
+	} )
+}
+
 //Login page files:
+exports.username = function(request, response){
+	db.get("SELECT username FROM users WHERE sessionID = ?", [request.session.id], function(err, row){
+		if(err)
+			console.log(err);
+		else{
+			console.log(row.username);
+			response.send(row.username);
+		}
+	})
+}
+
 exports.home = function(request, response){
 	response.sendFile(__dirname + '/resources/templates/game/index.html');
 	console.log("index.html sent");
@@ -78,33 +174,6 @@ exports.signup = function(request, response){
 
 //---------------------------
 
-//The game homepage
-
-// exports.salt = function(request, response) {
-// 	db.get("SELECT salt FROM users WHERE username = ?",[request.body.username], function(err, row){
-// 		if(err){
-// 		 	return console.log(err);
-// 		}
-// 		response.send({salt: row.salt});
-// 	});
-// }
-// exports.login = function(request, response){
-// 	db.get("SELECT username, hash FROM users WHERE username = ?", [request.body.username],function(err, row){
-// 		if(err){
-// 			return console.log(err);
-// 		}
-// 		if(row.hash == request.body.hash){
-// 			response.sendFile("_dirname + '/resources/templates/game/index.html'");
-// 			console.log("User authenticated");
-// 		}
-// 		else{
-// 			response.send(404);
-// 			console.log("User authentication FAILED");
-// 		}
-
-// 	});
-// }
-
 exports.login = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/login/login.html');
 	console.log("login.html sent");
@@ -129,12 +198,7 @@ exports.background = function(request, response) {
 	console.log("background.jpg sent");
 }
 
-exports.username = function(request, response){
-	var username = request.body;
-	console.log(request.body);
-	//check username with data base and respond with salt
 
-}
 
 /*
  * Sample Image route function

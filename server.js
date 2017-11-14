@@ -11,7 +11,7 @@ var sessionStore = new sqlite3Store({dir: "resources/",db: "sessionsDB.db",table
 app.use(bodyParser.json());
 
 app.use(session({
-	secret: "Rondom",
+	secret: "Random",
 	resave: true,
 	saveUninitialized: true,
 	store: sessionStore,
@@ -47,15 +47,12 @@ app.use("/", function(request, response, next){
 var server = app.listen(8081, function(){
 	var host = server.address().address;
 	var port = server.address().port;
-
 	console.log("Server running at http://%s:%s",host,port);
 })
 
-
-
 db.serialize(function() {
 	db.run("DROP TABLE IF EXISTS users");
-	db.run("CREATE TABLE users (account_id, username TEXT, salt TEXT, hash TEXT, sessionID TEXT)");
+	db.run("CREATE TABLE users (account_id TEXT, username TEXT, salt TEXT, hash TEXT, sessionID TEXT)");
 	//db.run("INSERT INTO users VALUES (1, 'admin', 'today', 'abcdefg')");
 	//
 	//
@@ -81,97 +78,19 @@ app.get('/login.js', routes.loginjs)
 app.get('/md5.js', routes.md5)
 app.get('/login.html', routes.login)
 app.get('/game.js', routes.game)
-app.post('/username', routes.username)
 app.get('/signup.html', routes.signup)
+app.get('/username', routes.username);
 
-app.post('/logout', function(request,response){
-	db.run("UPDATE users SET sessionID = ? WHERE sessionID = ?", ["loggedout", request.session.id], function(err){
-		if(err){
-			console.log(err);
-			response.sendStatus(500);
-		}
-		else{
-			console.log("User Logged out");
-			response.sendStatus(200);
-		}
-		
-	})
-})
-
-app.post('/getSalt', function(request, response) {
-	console
-	db.get("SELECT salt FROM users WHERE username = ?",[request.body.username], function(err, row){
-		if(err){
-			console.log("ERROR!!");
-		 	return console.log(err);
-		}
-		if(row != null ){
-			console.log("salt here : "+ row.salt);
-			response.send({salt: row.salt});
-		}
-		else{
-			console.log("Username does not exist");
-			response.sendStatus(404);
-		}
-	});
-})
-
-
-app.post('/login', function(request, response) {
-	db.get("SELECT username, hash FROM users WHERE username = ?", [request.body.username],function(err, row){
-		if(err) {
-			return console.log(err);
-		}
-		if(row.hash == request.body.hash) {
-			console.log("User authenticated");
-			saveLogin(request.session.id, request.body.username);
-			response.send({ redirect: '/' });	
-		}
-		else {
-			response.send(404);
-			console.log("User authentication FAILED");
-		}
-
-	});
-})
-
-app.post('/signUp', function(request, response) {
-	db.get("SELECT username FROM users WHERE username = ?", [request.body.username], function(err, row) {
-		if(err) {
-			return console.log(err);
-		}
-		if(row != null) {
-			// Handle response that username exists
-			response.sendStatus(404);
-		} else {
-			db.run("INSERT INTO users VALUES(?, ?, ?, ?, ?)", [1, request.body.username, request.body.salt, request.body.hash, ""], function(err) {
-				console.log(request.body);	
-					if(err)
-						return console.log(err);
-					else
-						saveLogin(request.session.id, request.body.username);
-						response.send({ redirect: '/' });
-						console.log("USER ADDED");
-						db.each("SELECT * from users", function(err, row){
-							console.log(row.username + " " + row.salt + " " + row.hash+ " " + row.sessionID);
-						}); 
-				});
-		}
-	});
-
-	
-})
-
-function saveLogin (sid, username){
-	db.run("UPDATE users SET sessionID = ? WHERE username = ?",[sid, username], function(err){
-		if(err)
-			return console.log(err);
-	} )
-}
+app.post('/logout', routes.logout)
+app.post('/getSalt',routes.getSalt)
+app.post('/login', routes.loginPost)
+app.post('/signUp', routes.signupPost)
 
 
 // GAME SOCKET STUFF BELOW HERE 
 // (eventually move to another file)
+//object to store locations of players
+var userLoc = {};
 
 var io = require('socket.io')(server);
 io.on('connection', function (socket) {
@@ -180,9 +99,16 @@ io.on('connection', function (socket) {
 	socket.emit('join', "You have successfully joined");
 	
 	socket.on('updatePlayerLoc', function(data) {
-		// console.log(data)
 		// Save player info in DB or maintain local list?
 		// Data recieved is in format {x: <int x>, y: <int y>}
+
+		//update userLoc with location for that particular player
+		userLoc[data.username] = {};
+		userLoc[data.username]["x"]= data.loc.x;
+		userLoc[data.username]["y"]= data.loc.y;
+		console.log(JSON.stringify(userLoc));
+		
+		socket.emit('playerLocUpdate', JSON.stringify(userLoc));
 	})
 })
 

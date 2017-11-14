@@ -61,11 +61,22 @@ function player(width, height, color, x, y) {
         ctx.fillStyle = color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
-
+    
     this.sendLocation = function() {
-        socket.emit('updatePlayerLoc', {x: this.x, y: this.y});
+        //added temp username
+        socket.emit('updatePlayerLoc', {username: "test", loc: {x: this.x, y: this.y} });
+        socket.on('playerLocUpdate', function(data){
+            console.log(data);
+        });
     }
 }
+//--------------test--------------------------
+function updatePlayers(loc){
+    for(var key in loc){
+        console.log(loc);
+    }
+}
+//--------------test--------------------------
 
 function building(width, height, x, y) {
     this.width = width;
