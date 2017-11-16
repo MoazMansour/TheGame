@@ -1,8 +1,10 @@
 var keys = [];
 var buildings = [];
 var objects = [];
+var opponents = [];
 var myPlayer;
 var socket;
+var myUserName = "username1";
 
 function startGame() {
     socket = io.connect('http://localhost:8081');
@@ -10,6 +12,9 @@ function startGame() {
         console.log("server confirm joined");
         // retrieve data about buildings
         // emit my start location? unless set by server
+    });
+    socket.on('playerLocUpdate', function(data){
+        updatePlayers(JSON.parse(data));
     });
     myPlayer = new player(20, 20, "red", 250, 200);
     buildings[0] = new building(150, 70, 200, 50);
@@ -23,7 +28,8 @@ var map = {
         this.canvas.height = 400;
         this.context = this.canvas.getContext("2d");
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-        this.interval = setInterval(updateGame, 20);
+        this.localInterval = setInterval(updateGameLocal, 20);
+        this.remoteInterval = setInterval(updateGameRemote, 1000);
         window.addEventListener('keydown', function (e) {
             keys[e.keyCode] = true;
         })
@@ -37,7 +43,6 @@ var map = {
 }
 
 function player(width, height, color, x, y) {
-    this.userName = "username";
     this.width = width;
     this.height = height;
     this.x = x;
@@ -64,17 +69,19 @@ function player(width, height, color, x, y) {
     
     this.sendLocation = function() {
         //added temp username
-        socket.emit('updatePlayerLoc', {username: "test", loc: {x: this.x, y: this.y} });
-        socket.on('playerLocUpdate', function(data){
-            console.log(data);
-        });
+        socket.emit('updatePlayerLoc', {username: myUserName, loc: {x: this.x, y: this.y} });
     }
 }
 //--------------test--------------------------
-function updatePlayers(loc){
-    for(var key in loc){
-        console.log(loc);
+function updatePlayers(data){
+    newOpponents = []
+    for(var key in data){
+        console.log("adding " + key);
+        console.log(data);
+        console.log(data[key]);
+        newOpponents.push(new opponent(key, "blue", data[key].x, data[key].y, 15, 15));
     }
+    opponents = newOpponents;
 }
 //--------------test--------------------------
 
@@ -90,13 +97,33 @@ function building(width, height, x, y) {
     }
 }
 
-function updateGame() {
+function opponent(username, color, x, y, width, height) {
+    this.userName = username;
+    this.width = width;
+    this.height = height;
+    this.x = x;
+    this.y = y;
+    this.update = function() {
+        ctx = map.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+}
+
+function updateGameLocal() {
     map.clear();
     myPlayer.move();
     myPlayer.update();
     for (var i = 0, len = buildings.length; i < len; i++) {
        buildings[i].update();
     }
+    for (var i = 0, len = opponents.length; i < len; i++) {
+        if (opponents[i].userName != myUserName)
+            opponents[i].update();
+     }
+}
+
+function updateGameRemote() {
     myPlayer.sendLocation();
 }
 
