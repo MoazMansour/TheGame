@@ -91,6 +91,9 @@ app.post('/signUp', routes.signupPost)
 // (eventually move to another file)
 //object to store locations of players
 var userLoc = {};
+userLoc["Bob"] = {};
+userLoc["Bob"]["x"]= 100;
+userLoc["Bob"]["y"]= 50;
 
 var io = require('socket.io')(server);
 io.on('connection', function (socket) {
@@ -109,6 +112,12 @@ io.on('connection', function (socket) {
 		console.log(JSON.stringify(userLoc));
 		
 		socket.emit('playerLocUpdate', JSON.stringify(userLoc));
+	})
+	
+	//remove player form userLoc when he logs out
+	socket.on('logout', function(data){
+		delete userLoc[data];
+		console.log("User" + data + "has been logged out");
 	})
 })
 

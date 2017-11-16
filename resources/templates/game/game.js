@@ -146,7 +146,7 @@ function logout() {
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "logout", true);
     xhr.send();
-
+    socket.emit('logout', myUserName);
     xhr.onreadystatechange = function(){
         if(xhr.readyState === 4 && xhr.status == 200){
             window.location = "/login.html";
