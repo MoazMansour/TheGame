@@ -4,7 +4,7 @@ var objects = [];
 var opponents = [];
 var myPlayer;
 var socket;
-var myUserName = "username1";
+var myUserName;
 
 function startGame() {
     socket = io.connect('http://localhost:8081');
@@ -16,6 +16,10 @@ function startGame() {
     socket.on('playerLocUpdate', function(data){
         updatePlayers(JSON.parse(data));
     });
+    
+    myUserName = parseUserName();
+    console.log(myUserName);
+
     myPlayer = new player(20, 20, "red", 250, 200);
     buildings[0] = new building(150, 70, 200, 50);
     map.start();
@@ -151,8 +155,24 @@ function logout() {
             console.log("log out error");
             // alert("you can never leave");
         }
+    }   
+}
+
+// adapted from https://www.w3schools.com/js/js_cookies.asp
+function parseUserName() {
+    var name = "userName=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
     }
-    
+    return "unknown";
 }
 
 startGame();

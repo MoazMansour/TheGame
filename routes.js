@@ -54,6 +54,7 @@ exports.loginPost = function(request, response) {
 		if(row.hash == request.body.hash) {
 			console.log("User authenticated");
 			saveLogin(request.session.id, request.body.username);
+			response.cookie('userName', request.body.username, { maxAge: 900000, httpOnly: false });
 			response.send({ redirect: '/' });	
 		}
 		else {
@@ -79,6 +80,7 @@ exports.signupPost = function(request, response) {
 						return console.log(err);
 					else
 						saveLogin(request.session.id, request.body.username);
+						response.cookie('userName', request.body.username, { maxAge: 900000, httpOnly: false });
 						response.send({ redirect: '/' });
 						console.log("USER ADDED");
 						db.each("SELECT * from users", function(err, row){
