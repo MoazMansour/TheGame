@@ -52,15 +52,7 @@ var server = app.listen(8081, function(){
 
 db.serialize(function() {
 	db.run("DROP TABLE IF EXISTS users");
-	db.run("CREATE TABLE users (account_id TEXT, username TEXT, salt TEXT, hash TEXT, sessionID TEXT)");
-	//db.run("INSERT INTO users VALUES (1, 'admin', 'today', 'abcdefg')");
-	//
-	//
-	// db.each("SELECT account_id AS id, username FROM users", function(err, row) {
-	// 	console.log(row.id + ": " + row.username);
-	//
-	// });
-
+	db.run("CREATE TABLE users (account_id TEXT, username TEXT, salt TEXT, hash TEXT, sessionID TEXT, color TEXT)");
 });
 
 //basic routes
@@ -91,9 +83,6 @@ app.post('/signUp', routes.signupPost)
 // (eventually move to another file)
 //object to store locations of players
 var userLoc = {};
-userLoc["Bob"] = {};
-userLoc["Bob"]["x"]= 100;
-userLoc["Bob"]["y"]= 50;
 
 var io = require('socket.io')(server);
 io.on('connection', function (socket) {
@@ -103,12 +92,13 @@ io.on('connection', function (socket) {
 	
 	socket.on('updatePlayerLoc', function(data) {
 		// Save player info in DB or maintain local list?
-		// Data recieved is in format {x: <int x>, y: <int y>}
+		// Data recieved is in format {username : <username> loc: {x: <int x>, y: <int y>} color: <red>
 
 		//update userLoc with location for that particular player
 		userLoc[data.username] = {};
-		userLoc[data.username]["x"]= data.loc.x;
-		userLoc[data.username]["y"]= data.loc.y;
+		userLoc[data.username]["x"] = data.loc.x;
+		userLoc[data.username]["y"] = data.loc.y;
+		userLoc[data.username]["color"] = data.color;
 		console.log(JSON.stringify(userLoc));
 		
 		socket.emit('playerLocUpdate', JSON.stringify(userLoc));
@@ -117,7 +107,7 @@ io.on('connection', function (socket) {
 	//remove player form userLoc when he logs out
 	socket.on('logout', function(data){
 		delete userLoc[data];
-		console.log("User" + data + "has been logged out");
+		console.log("User " + data + " has been logged out");
 	})
 })
 

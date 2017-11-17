@@ -74,7 +74,7 @@ exports.signupPost = function(request, response) {
 			// Handle response that username exists
 			response.sendStatus(404);
 		} else {
-			db.run("INSERT INTO users VALUES(?, ?, ?, ?, ?)", [shortId.generate(), request.body.username, request.body.salt, request.body.hash, ""], function(err) {
+			db.run("INSERT INTO users VALUES(?, ?, ?, ?, ?, ?)", [shortId.generate(), request.body.username, request.body.salt, request.body.hash, "", "red"], function(err) {
 				console.log(request.body);	
 					if(err)
 						return console.log(err);
@@ -84,7 +84,7 @@ exports.signupPost = function(request, response) {
 						response.send({ redirect: '/' });
 						console.log("USER ADDED");
 						db.each("SELECT * from users", function(err, row){
-							console.log("Username: " + row.username + " Account ID: "+row.account_id+" Salt: " + row.salt + " Hash: " + row.hash+ " Session ID: " + row.sessionID);
+							console.log("Username: " + row.username + " Account ID: "+row.account_id+" Salt: " + row.salt + " Hash: " + row.hash+ " Session ID: " + row.sessionID + " Color: " + row.color);
 						}); 
 				});
 		}
