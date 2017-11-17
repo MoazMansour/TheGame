@@ -102,20 +102,29 @@ function saveLogin (sid, username){
 }
 
 //Login page files:
-exports.username = function(request, response){
-	db.get("SELECT username FROM users WHERE sessionID = ?", [request.session.id], function(err, row){
-		if(err)
-			console.log(err);
-		else{
-			console.log(row.username);
-			response.send(row.username);
-		}
-	})
+exports.game = function(request, response){
+	response.sendFile(__dirname + "/resources/templates/game/game.html");
+	console.log("game.hmtl sent");
 }
 
+exports.menu = function(request, response){
+	response.sendFile(__dirname + "/resources/templates/menu/menu.html");
+	console.log("menu.html sent");
+}
+
+exports.menujs = function(request, response){
+	response.sendFile(__dirname + "/resources/templates/menu/menu.js");
+	console.log("menu.js sent");
+}
+
+exports.menustyle = function(request, response){
+	response.sendFile(__dirname + "/resources/templates/menu/style.css");
+}
+
+
 exports.home = function(request, response){
-	response.sendFile(__dirname + '/resources/templates/game/index.html');
-	console.log("index.html sent");
+	response.sendFile(__dirname + '/resources/templates/game/game.html');
+	console.log("game.html sent");
 }
 
 exports.usrimg = function(request, response) {
@@ -183,7 +192,7 @@ exports.login = function(request, response) {
 }
 
 
-exports.game = function(request, response) {
+exports.gamejs = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/game/game.js');
 	console.log("game.js sent");
 }

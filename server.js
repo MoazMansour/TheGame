@@ -32,8 +32,8 @@ app.use("/", function(request, response, next){
 			}
 		}
 		else {
-			if(request.url == '/login.html' || request.url == '/signup.html') {
-				response.redirect('/');
+			if(request.url == '/login.html' || request.url == '/signup.html' || request.url == '/') {
+				response.redirect('/menu.html');
 			} else {
 				next();
 			}
@@ -57,6 +57,7 @@ db.serialize(function() {
 
 //basic routes
 app.get('/', routes.home)
+app.get('/game.html', routes.game)
 app.get('/style.css', routes.style)
 app.get('/images/user.png', routes.usrimg)
 app.get('/images/key.png', routes.keyimg)
@@ -69,9 +70,11 @@ app.get('/images/background.jpg', routes.background)
 app.get('/login.js', routes.loginjs)
 app.get('/md5.js', routes.md5)
 app.get('/login.html', routes.login)
-app.get('/game.js', routes.game)
+app.get('/game.js', routes.gamejs)
 app.get('/signup.html', routes.signup)
-app.get('/username', routes.username);
+app.get('/menu.html', routes.menu)
+app.get('/menu.js', routes.menujs)
+app.get('/menu/style.css', routes.menustyle)
 
 app.post('/logout', routes.logout)
 app.post('/getSalt',routes.getSalt)
