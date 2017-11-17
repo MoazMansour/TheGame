@@ -49,7 +49,7 @@ var server = app.listen(8081, function(){
 	var port = server.address().port;
 	console.log("Server running at http://%s:%s",host,port);
 })
-
+//MUST BE PERSISTANT EVENTUALLY
 db.serialize(function() {
 	db.run("DROP TABLE IF EXISTS users");
 	db.run("CREATE TABLE users (account_id TEXT, username TEXT, salt TEXT, hash TEXT, sessionID TEXT, color TEXT)");
@@ -81,6 +81,7 @@ app.post('/signUp', routes.signupPost)
 
 // GAME SOCKET STUFF BELOW HERE 
 // (eventually move to another file)
+
 //object to store locations of players
 var userLoc = {};
 

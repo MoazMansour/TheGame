@@ -81,6 +81,7 @@ exports.signupPost = function(request, response) {
 					else
 						saveLogin(request.session.id, request.body.username);
 						response.cookie('userName', request.body.username, { maxAge: 900000, httpOnly: false });
+						response.cookie('color', "red", {maxAge: 900000, httpOnly: false});
 						response.send({ redirect: '/' });
 						console.log("USER ADDED");
 						db.each("SELECT * from users", function(err, row){
