@@ -17,10 +17,11 @@ function startGame() {
         updatePlayers(JSON.parse(data));
     });
     
-    myUserName = parseUserName();
-    console.log(myUserName);
-
-    myPlayer = new player(20, 20, "red", 250, 200);
+    myUserName = parseCookieData("userName=");
+    myColor = parseCookieData("color=");
+    if (myColor = "unknown")
+        myColor = "red";
+    myPlayer = new player(20, 20, myColor, 250, 200);
     buildings[0] = new building(150, 70, 200, 50);
     map.start();
 }
@@ -159,8 +160,7 @@ function logout() {
 }
 
 // adapted from https://www.w3schools.com/js/js_cookies.asp
-function parseUserName() {
-    var name = "userName=";
+function parseCookieData(key) {
     var decodedCookie = decodeURIComponent(document.cookie);
     var ca = decodedCookie.split(';');
     for(var i = 0; i < ca.length; i++) {
@@ -168,8 +168,8 @@ function parseUserName() {
         while (c.charAt(0) == ' ') {
             c = c.substring(1);
         }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
+        if (c.indexOf(key) == 0) {
+            return c.substring(key.length, c.length);
         }
     }
     return "unknown";
