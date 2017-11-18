@@ -21,8 +21,9 @@ app.use(session({
 app.use("/", function(request, response, next){
 	console.log(request.url);
 	db.get("SELECT username FROM users WHERE sessionID = ?",[request.session.id], function(err,row){
+		restrictedRoutes = /\/menu*|\/game*|\/account*/;
 		if(row == null){
-			if(request.url == '/'){
+			if(request.url == '/' || request.url.match(restrictedRoutes) != null){
 				response.redirect('/login.html');
 				console.log("Cookie not found");
 				console.log(request.session.id);
@@ -30,8 +31,7 @@ app.use("/", function(request, response, next){
 			else{
 				next();
 			}
-		}
-		else {
+		} else {
 			if(request.url == '/login.html' || request.url == '/signup.html' || request.url == '/') {
 				response.redirect('/menu.html');
 			} else {
@@ -57,8 +57,6 @@ db.serialize(function() {
 
 //basic routes
 app.get('/', routes.home)
-app.get('/game.html', routes.game)
-app.get('/style.css', routes.style)
 app.get('/images/user.png', routes.usrimg)
 app.get('/images/key.png', routes.keyimg)
 app.get('/images/redo.png', routes.redoimg)
@@ -70,14 +68,17 @@ app.get('/images/background.jpg', routes.background)
 app.get('/login.js', routes.loginjs)
 app.get('/md5.js', routes.md5)
 app.get('/login.html', routes.login)
-app.get('/game.js', routes.gamejs)
 app.get('/signup.html', routes.signup)
+app.get('/entry_style.css', routes.entryStyle)
 app.get('/menu.html', routes.menu)
 app.get('/menu.js', routes.menujs)
 app.get('/menu_style.css', routes.menustyle)
 app.get('/account.html', routes.account)
 app.get('/account.js', routes.accountjs)
 app.get('/account_style.css', routes.accountstyle)
+app.get('/game.html', routes.game)
+app.get('/game.js', routes.gamejs)
+app.get('/game_style.css', routes.style)
 
 app.post('/logout', routes.logout)
 app.post('/getSalt',routes.getSalt)

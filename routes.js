@@ -215,6 +215,10 @@ exports.gamejs = function(request, response) {
 	console.log("game.js sent");
 }
 
+exports.entryStyle = function(request, response) {
+	response.sendFile(__dirname + '/resources/templates/login/style.css');
+	console.log("entry_style.css sent");
+}
 //---------------------------
 //TheGame Common style file and background
 
