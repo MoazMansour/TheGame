@@ -1,0 +1,29 @@
+.global_header {
+    height: 40px;
+}
+
+.user {
+    float: right;
+    margin-right: 40px;
+    font-size: 30px;
+}
+
+.clear {
+    clear: both;
+}
+
+.menu_button {
+    margin: 2% 35%;
+    width: 30%;
+    clear: both;
+}
+
+.button_contianer {
+    display: block;
+    width: 100%;
+}
+
+.menu_header {
+    text-align: center;
+    color: red;
+}

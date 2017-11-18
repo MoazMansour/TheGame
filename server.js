@@ -74,7 +74,7 @@ app.get('/game.js', routes.gamejs)
 app.get('/signup.html', routes.signup)
 app.get('/menu.html', routes.menu)
 app.get('/menu.js', routes.menujs)
-app.get('/menu/style.css', routes.menustyle)
+app.get('/menu_style.css', routes.menustyle)
 
 app.post('/logout', routes.logout)
 app.post('/getSalt',routes.getSalt)

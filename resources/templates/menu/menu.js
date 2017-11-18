@@ -1,7 +1,7 @@
 
 function loadUsername() {
     username = parseCookieData("userName=");
-    document.getElementById("#userName").textContent = username;
+    document.getElementById("userName").textContent = "Welcome " + username + "!";
 }
 
 function joinGame() {
