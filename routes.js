@@ -107,6 +107,8 @@ exports.game = function(request, response){
 	console.log("game.hmtl sent");
 }
 
+//--------------------------------------------------------------------------
+// Menu page routes:
 exports.menu = function(request, response){
 	response.sendFile(__dirname + "/resources/templates/menu/menu.html");
 	console.log("menu.html sent");
@@ -119,6 +121,22 @@ exports.menujs = function(request, response){
 
 exports.menustyle = function(request, response){
 	response.sendFile(__dirname + "/resources/templates/menu/style.css");
+}
+
+//--------------------------------------------------------------------------
+// Account page routes:
+exports.account = function(request, response){
+	response.sendFile(__dirname + "/resources/templates/account/account.html");
+	console.log("menu.html sent");
+}
+
+exports.accountjs = function(request, response){
+	response.sendFile(__dirname + "/resources/templates/account/account.js");
+	console.log("menu.js sent");
+}
+
+exports.accountstyle = function(request, response){
+	response.sendFile(__dirname + "/resources/templates/account/style.css");
 }
 
 
