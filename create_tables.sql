@@ -1,4 +1,3 @@
-drop table if exists have;
 drop table if exists plays;
 drop table if exists interacts;
 drop table if exists states;
