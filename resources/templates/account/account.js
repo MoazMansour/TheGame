@@ -11,6 +11,25 @@ function navigateToMenu() {
     window.location = "/";
 }
 
+function updateColor() {
+    var xhr = new XMLHttpRequest();
+    var url = "updateColor";
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-type", "application/json");
+
+    var color = document.getElementById("colorPicker").value;
+    var data = JSON.stringify({ "color": color});
+    xhr.send(data);
+
+    xhr.onreadystatechange = function() {
+        if(xhr.readyState === 4 && xhr.status === 200){
+            console.log("color update succesful");
+            alert("Color Updated");
+            loadAccountInfo();
+        }
+    }
+}
+
 // adapted from https://www.w3schools.com/js/js_cookies.asp
 function parseCookieData(key) {
     var decodedCookie = decodeURIComponent(document.cookie);

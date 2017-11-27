@@ -74,7 +74,7 @@ exports.signupPost = function(request, response) {
 			// Handle response that username exists
 			response.sendStatus(404);
 		} else {
-			db.run("INSERT INTO users VALUES(?, ?, ?, ?, ?, ?)", [shortId.generate(), request.body.username, request.body.salt, request.body.hash, "", "red"], function(err) {
+			db.run("INSERT INTO users VALUES(?, ?, ?, ?, ?, ?)", [shortId.generate(), request.body.username, request.body.salt, request.body.hash, "", "#ff0000"], function(err) {
 				console.log(request.body);	
 					if(err)
 						return console.log(err);
@@ -125,6 +125,22 @@ exports.menustyle = function(request, response){
 
 //--------------------------------------------------------------------------
 // Account page routes:
+exports.updateColor = function(request, response){
+	console.log("Color: " + request.body.color);
+	db.run("UPDATE users SET color = ? WHERE sessionID = ?", [request.body.color, request.session.id], function(err){
+		if(err){
+			console.log(err);
+			response.sendStatus(500);
+		}
+		else
+			response.sendStatus(200);
+	})
+	db.each("SELECT * from users", function(err, row){
+		console.log("Username: " + row.username + " Account ID: "+row.account_id+" Salt: " + row.salt + " Hash: " + row.hash+ " Session ID: " + row.sessionID + " Color: " + row.color);
+	}); 
+	
+}
+
 exports.account = function(request, response){
 	response.sendFile(__dirname + "/resources/templates/account/account.html");
 	console.log("menu.html sent");
