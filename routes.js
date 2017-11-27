@@ -74,14 +74,14 @@ exports.signupPost = function(request, response) {
 			// Handle response that username exists
 			response.sendStatus(404);
 		} else {
-			db.run("INSERT INTO users VALUES(?, ?, ?, ?, ?, ?)", [shortId.generate(), request.body.username, request.body.salt, request.body.hash, "", "#ff0000"], function(err) {
+			db.run("INSERT INTO users VALUES(?, ?, ?, ?, ?, ?)", [shortId.generate(), request.body.username, request.body.salt, request.body.hash, "", request.body.color], function(err) {
 				console.log(request.body);	
 					if(err)
 						return console.log(err);
 					else
 						saveLogin(request.session.id, request.body.username);
 						response.cookie('userName', request.body.username, { maxAge: 900000, httpOnly: false });
-						response.cookie('color', "red", {maxAge: 900000, httpOnly: false});
+						response.cookie('color', request.body.color, {maxAge: 900000, httpOnly: false, encode: String});
 						response.send({ redirect: '/' });
 						console.log("USER ADDED");
 						db.each("SELECT * from users", function(err, row){

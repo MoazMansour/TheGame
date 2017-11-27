@@ -11,6 +11,7 @@ function navigateToMenu() {
     window.location = "/";
 }
 
+//Sends new color code to server
 function updateColor() {
     var xhr = new XMLHttpRequest();
     var url = "updateColor";

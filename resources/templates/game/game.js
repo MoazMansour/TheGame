@@ -19,8 +19,11 @@ function startGame() {
     
     myUserName = parseCookieData("userName=");
     myColor = parseCookieData("color=");
-    if (myColor = "unknown")
+    console.log("Color = "+ myColor);
+    if (myColor = null){
+        console.log("FUCK THAT");
         myColor = "red";
+    }
     myPlayer = new player(20, 20, myColor, 250, 200);
     buildings[0] = new building(150, 70, 200, 50);
     map.start();
