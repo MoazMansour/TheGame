@@ -132,8 +132,10 @@ exports.updateColor = function(request, response){
 			console.log(err);
 			response.sendStatus(500);
 		}
-		else
+		else{
+			response.cookie('color', request.body.color, {maxAge: 900000, httpOnly: false, encode: String});
 			response.sendStatus(200);
+		}
 	})
 	db.each("SELECT * from users", function(err, row){
 		console.log("Username: " + row.username + " Account ID: "+row.account_id+" Salt: " + row.salt + " Hash: " + row.hash+ " Session ID: " + row.sessionID + " Color: " + row.color);
