@@ -79,7 +79,7 @@ app.get('/account_style.css', routes.accountstyle)
 app.get('/game.html', routes.game)
 app.get('/game.js', routes.gamejs)
 app.get('/game_style.css', routes.style)
-
+app.get('/map.jpg', routes.gameBackground)
 app.post('/logout', routes.logout)
 app.post('/getSalt',routes.getSalt)
 app.post('/login', routes.loginPost)

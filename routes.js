@@ -202,13 +202,17 @@ exports.signup = function(request, response){
 	console.log("signup.html sent");
 }
 
-//---------------------------
-
 exports.login = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/login/login.html');
 	console.log("login.html sent");
 }
 
+//---------------------------
+//Game routes
+exports.gameBackground = function(request, response) {
+	response.sendFile(__dirname + '/resources/templates/game/map.jpg');
+	console.log("game background sent");
+}
 
 exports.gamejs = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/game/game.js');
