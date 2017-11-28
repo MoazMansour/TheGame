@@ -73,7 +73,7 @@ function player(width, height, color, x, y) {
     
     this.sendLocation = function() {
         //added temp username
-        socket.emit('updatePlayerLoc', {username: myUserName, loc: {x: this.x, y: this.y} });
+        socket.emit('updatePlayerLoc', {username: myUserName, loc: {x: this.x, y: this.y}, color: myColor });
     }
 }
 //--------------test--------------------------
