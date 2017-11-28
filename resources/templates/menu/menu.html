@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>UR Game</title>
+        <link rel="stylesheet" href="menu_style.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+        <script src="menu.js" type="text/javascript"></script>
+    </head>
+    <body onload="loadUsername()">
+        <div class="global_header">
+            <div class="user" id="userName"></div>
+            <div class="clear"></div>
+        </div>
+        <h1 class="menu_header">Main Menu</h1>
+        <div class="button_contianer">
+            <button class="menu_button" onclick="joinGame()">Join Game</button>
+            <button class="menu_button" onclick="navigateToAccount()">Edit Account</button>
+            <button class="menu_button" onclick="logout()">Log Out</button>
+        </div>
+    </body>
+</html>
