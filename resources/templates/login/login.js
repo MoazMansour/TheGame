@@ -62,6 +62,7 @@ function signup() {
     timeStamp = Date.now();
     password = document.getElementById("password").value;
     passWordCheck = document.getElementById("re-password").value;
+    var color = document.getElementById("colorPicker").value;
 
     if (password == passWordCheck) {
         user = document.getElementById("username").value,
@@ -73,7 +74,7 @@ function signup() {
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-type", "application/json");
 
-        var data = JSON.stringify({ "username": user, "hash": hash, "salt": salt });
+        var data = JSON.stringify({ "username": user, "hash": hash, "salt": salt, "color": color });
         xhr.send(data);
 
         xhr.onreadystatechange = function () {

@@ -5,6 +5,7 @@ var opponents = [];
 var myPlayer;
 var socket;
 var myUserName;
+var myColor;
 
 function startGame() {
     socket = io.connect('http://localhost:8081');
@@ -19,8 +20,6 @@ function startGame() {
     
     myUserName = parseCookieData("userName=");
     myColor = parseCookieData("color=");
-    if (myColor = "unknown")
-        myColor = "red";
     myPlayer = new player(20, 20, myColor, 250, 200);
     buildings[0] = new building(150, 70, 200, 50);
     map.start();
@@ -74,7 +73,7 @@ function player(width, height, color, x, y) {
     
     this.sendLocation = function() {
         //added temp username
-        socket.emit('updatePlayerLoc', {username: myUserName, loc: {x: this.x, y: this.y} });
+        socket.emit('updatePlayerLoc', {username: myUserName, loc: {x: this.x, y: this.y}, color: myColor });
     }
 }
 //--------------test--------------------------
