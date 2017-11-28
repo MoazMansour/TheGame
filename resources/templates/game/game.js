@@ -18,7 +18,7 @@ function startGame() {
     });
     
     myUserName = parseCookieData("userName=");
-    myColor = parseCookieData("color=");
+    myColor = JSON.stringify(parseCookieData("color="));
     console.log("Color = "+ myColor);
     if (myColor = null){
         console.log("FUCK THAT");

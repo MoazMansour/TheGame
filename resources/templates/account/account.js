@@ -1,10 +1,10 @@
-
 function loadAccountInfo() {
     username = parseCookieData("userName=");
     color = parseCookieData("color=");
     document.getElementById("userName").textContent = "Welcome " + username + "!";
     document.getElementById("accountName").textContent = "Username: " + username;
-    document.getElementById("accountColor").textContent = "Color: " + color;
+    //document.getElementById("accountColor").textContent = "Color: " + color;
+    document.getElementById("colorPicker").value = color;
 }
 
 function navigateToMenu() {
