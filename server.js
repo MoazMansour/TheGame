@@ -84,6 +84,7 @@ app.post('/logout', routes.logout)
 app.post('/getSalt',routes.getSalt)
 app.post('/login', routes.loginPost)
 app.post('/signUp', routes.signupPost)
+app.post('/updateColor', routes.updateColor)
 
 
 // GAME SOCKET STUFF BELOW HERE 
