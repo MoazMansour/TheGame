@@ -88,10 +88,11 @@ function startGame() {
 var map = {
     canvas : document.createElement("canvas"),
     background : new Image(),
-    context : this.canvas.getContext("2d");
+    context : undefined,
     start : function() {
         this.canvas.width = 500;
         this.canvas.height = 400;
+        this.context = this.canvas.getContext("2d");
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.localInterval = setInterval(updateGameLocal, 20);
         this.remoteInterval = setInterval(updateGameRemote, 1000);
@@ -114,8 +115,8 @@ var map = {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     },
     update : function() {
-        this.context.clearRect(0, 0, game.width, game.height);
-        this.context.drawImage(background, /*LEFT*/20, /*TOP*/20, 1000, 500, 0, 0, 1000, 500);
+        this.context.clearRect(0, 0, 500, 400);
+        this.context.drawImage(this.background, /*LEFT*/20, /*TOP*/20, 1000, 500, 0, 0, 1000, 500);
         this.context.beginPath();
         this.context.arc(500, 250, 10, 0, Math.PI * 2, false);
         this.context.closePath();
