@@ -1,3 +1,14 @@
+DROP DATABASE IF EXISTS TheGame;
+DROP USER IF EXISTS admin;
+
+CREATE DATABASE TheGame;
+
+CREATE USER 'admin'@'localhost' IDENTIFIED BY 'thegame';
+GRANT ALL PRIVILEGES ON TheGame.* TO 'admin'@'localhost';
+FLUSH PRIVILEGES;
+
+USE TheGame;
+
 drop table if exists summons;
 drop table if exists plays;
 drop table if exists interacts;
@@ -10,8 +21,8 @@ drop table if exists users;
 CREATE TABLE IF NOT EXISTS users(
     user_id INT(6) ZEROFILL NOT NULL,
     username VARCHAR(20) UNIQUE NOT NULL,
-    color VARCHAR(50) NOT NULL,
-    email VARCHAR(100)    DEFAULT NULL,
+    color VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100)    NOT NULL,
     hash  VARCHAR(100)    NOT NULL,
     salt  VARCHAR(100)    NOT NULL,
     global_score    INT(8) ZEROFILL DEFAULT NULL,
