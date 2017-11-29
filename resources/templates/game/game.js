@@ -132,13 +132,20 @@ function player(width, height, color, x, y) {
     this.height = height;
     this.x = x;
     this.y = y;
+    /* change back to 1 after testing */
+    this.speed = 5;
     this.move = function() {
-        if(keys[83] && !this.collisionCheck(this.x, this.y + 1, this.width, this.height)) this.y += 1;
-        if(keys[87] && !this.collisionCheck(this.x, this.y - 1, this.width, this.height)) this.y -= 1;
-        if(keys[68] && !this.collisionCheck(this.x + 1, this.y, this.width, this.height)) this.x += 1;
-        if(keys[65] && !this.collisionCheck(this.x - 1, this.y, this.width, this.height)) this.x -= 1;
+        if(keys[83] && !this.collisionCheck(this.x, this.y + 1, this.width, this.height)) this.y += this.speed;
+        if(keys[87] && !this.collisionCheck(this.x, this.y - 1, this.width, this.height)) this.y -= this.speed;
+        if(keys[68] && !this.collisionCheck(this.x + 1, this.y, this.width, this.height)) this.x += this.speed;
+        if(keys[65] && !this.collisionCheck(this.x - 1, this.y, this.width, this.height)) this.x -= this.speed;
     }
     this.collisionCheck = function(x, y, t, h) {
+        // TODO: ADJUST UPPER BOUNDS FOR SIZE OF MAP
+        if(x < 10 || x > 1490)
+            return true;
+        if(y < 10 || y > 1690)
+            return true;
         for (var i = 0, len = buildings.length; i < len; i++) {
             if(collision(x, y, t, h, buildings[i])) {
                 return true;
