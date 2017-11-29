@@ -6,6 +6,8 @@ var myPlayer;
 var socket;
 var myUserName;
 var myColor;
+var windowWidth = 500;
+var windowHeight = 400;
 
 function startGame() {
     socket = io.connect('http://localhost:8081');
@@ -27,8 +29,8 @@ function startGame() {
 
 var map = {
     canvas : document.createElement("canvas"),
-    width : 500,
-    height : 400,
+    width : windowWidth,
+    height : windowHeight,
     background : new Image(),
     context : undefined,
     start : function() {
@@ -117,9 +119,7 @@ function building(width, height, x, y) {
     this.update = function(x, y) {
         ctx = map.context;
         ctx.fillStyle = "black";
-        console.log("x " + x);
-        console.log("y " + y);
-        ctx.fillRect(this.x - (x - 250), this.y - (y - 200), this.width, this.height);
+        ctx.fillRect(this.x - x, this.y - y, this.width, this.height);
     }
 }
 
@@ -129,10 +129,10 @@ function opponent(username, color, x, y, width, height) {
     this.height = height;
     this.x = x;
     this.y = y;
-    this.update = function() {
+    this.update = function(x, y) {
         ctx = map.context;
         ctx.fillStyle = color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.fillRect(this.x - x, this.y - y, this.width, this.height);
     }
 }
 
@@ -143,12 +143,12 @@ function updateGameLocal() {
 
     // ----- USED TO PHYSICALLY DRAW BUILDINGS (FOR TESTING) --------
     for (var i = 0, len = buildings.length; i < len; i++) {
-       buildings[i].update(myPlayer.x, myPlayer.y);
+       buildings[i].update(scaleX(myPlayer.x), scaleY(myPlayer.y));
     }
 
     for (var i = 0, len = opponents.length; i < len; i++) {
         if (opponents[i].userName != myUserName)
-            opponents[i].update();
+            opponents[i].update(scaleX(myPlayer.x), scaleY(myPlayer.y));
      }
 }
 
@@ -202,6 +202,14 @@ function parseCookieData(key) {
 function loadBuildings() {
     buildings[0] = new building(150, 70, 200, 50);
     //buildings[1] = new building(width, height, x, y);
+}
+
+function scaleX(x) {
+    return x - (windowWidth / 2);
+}
+
+function scaleY(y) {
+    return y - (windowHeight / 2);
 }
 
 startGame();
