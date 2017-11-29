@@ -10,7 +10,7 @@ var conn = mysql.createConnection({
 conn.connect(function(err){
 	if(err)
 		console.log(err);
-	console.log("Database Connected");	
+	console.log("Database Connected");
 });
 var app = express();
 var server = require('http').Server(app);
@@ -32,7 +32,7 @@ exports.logout = function(request,response){
 			console.log("User Logged out");
 			response.sendStatus(200);
 		}
-		
+
 	})
 }
 
@@ -63,7 +63,7 @@ exports.loginPost = function(request, response) {
 			console.log("User authenticated");
 			saveLogin(request.session.id, request.body.username);
 			response.cookie('userName', request.body.username, { maxAge: 900000, httpOnly: false });
-			response.send({ redirect: '/' });	
+			response.send({ redirect: '/' });
 		}
 		else {
 			response.send(404);
@@ -83,7 +83,7 @@ exports.signupPost = function(request, response) {
 			response.sendStatus(404);
 		} else {
 			conn.query("INSERT INTO users (username,salt,hash,sessionID,color) VALUES(?,?,?,?,?);", [request.body.username, request.body.salt, request.body.hash, "", request.body.color], function(err) {
-				console.log(request.body);	
+				console.log(request.body);
 					if(err)
 						return console.log(err);
 					else
@@ -94,12 +94,12 @@ exports.signupPost = function(request, response) {
 						console.log("USER ADDED");
 						conn.query("SELECT * from users", function(err, row){
 							console.log("Username: " + row[0].username +" Salt: " + row[0].salt + " Hash: " + row[0].hash+ " Session ID: " + row[0].sessionID + " Color: " + row[0].color);
-						}); 
+						});
 				});
 		}
 	});
 
-	
+
 }
 
 function saveLogin (sid, username){
@@ -147,8 +147,8 @@ exports.updateColor = function(request, response){
 	})
 	conn.query("SELECT * from users", function(err, row){
 		console.log("Username: " + row[0].username + " Account ID: "+row[0].account_id+" Salt: " + row[0].salt + " Hash: " + row[0].hash+ " Session ID: " + row[0].sessionID + " Color: " + row[0].color);
-	}); 
-	
+	});
+
 }
 
 exports.account = function(request, response){
@@ -262,7 +262,9 @@ exports.background = function(request, response) {
 	console.log("background.jpg sent");
 }
 
-
+exports.mapbk = function (request, response){
+	response.sendFile (__dirname + '/resources/templates/menu/mapbk.jpg');
+}
 
 /*
  * Sample Image route function

@@ -12,7 +12,7 @@ var conn = mysql.createConnection({
 conn.connect(function(err){
 	if(err)
 		console.log(err);
-	console.log("Database Connected");	
+	console.log("Database Connected");
 });
 var session = require('express-session');
 var mysqlStore = require('express-mysql-session')(session);
@@ -23,7 +23,7 @@ var options = {
     password: 'thegame',
     database: 'TheGame'
 };
- 
+
 var sessionStore = new mysqlStore(options);
 var app = express();
 app.use(bodyParser.json());
@@ -58,8 +58,8 @@ app.use("/", function(request, response, next){
 			}
 		}
 	});
-	
-	
+
+
 });
 
 //creating server
@@ -94,6 +94,7 @@ app.get('/game.html', routes.game)
 app.get('/game.js', routes.gamejs)
 app.get('/game_style.css', routes.style)
 app.get('/map.jpg', routes.gameBackground)
+app.get('/mapbk.jpg', routes.mapbk)
 app.post('/logout', routes.logout)
 app.post('/getSalt',routes.getSalt)
 app.post('/login', routes.loginPost)
@@ -101,7 +102,7 @@ app.post('/signUp', routes.signupPost)
 app.post('/updateColor', routes.updateColor)
 
 
-// GAME SOCKET STUFF BELOW HERE 
+// GAME SOCKET STUFF BELOW HERE
 // (eventually move to another file)
 
 //object to store locations of players
@@ -112,7 +113,7 @@ io.on('connection', function (socket) {
 	console.log("----SOCKET CREATED----");
 	// QUERY DATABASE FOR BUILDINGS AND OBJECTS
 	socket.emit('join', "You have successfully joined");
-	
+
 	socket.on('updatePlayerLoc', function(data) {
 		// Save player info in DB or maintain local list?
 		// Data recieved is in format {username : <username> loc: {x: <int x>, y: <int y>} color: <red>
@@ -123,14 +124,13 @@ io.on('connection', function (socket) {
 		userLoc[data.username]["y"] = data.loc.y;
 		userLoc[data.username]["color"] = data.color;
 		console.log(JSON.stringify(userLoc));
-		
+
 		socket.emit('playerLocUpdate', JSON.stringify(userLoc));
 	})
-	
+
 	//remove player form userLoc when he logs out
 	socket.on('logout', function(data){
 		delete userLoc[data];
 		console.log("User " + data + " has been logged out");
 	})
 })
-
