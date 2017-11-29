@@ -61,7 +61,7 @@ var map = {
         this.context.fill();
         this.context.stroke();
         this.context.fillStyle = color;
-        this.context.fillRect((this.width / 2) - 10, (this.height / 2) - 10, 20, 20);
+        this.context.fillRect((this.width / 2), (this.height / 2), 20, 20);
     }
 }
 
@@ -79,9 +79,9 @@ function player(width, height, color, x, y) {
     }
     this.collisionCheck = function(x, y, t, h) {
         // TODO: ADJUST UPPER BOUNDS FOR SIZE OF MAP
-        if(x < 10 || x > 1490)
+        if(x < 0 || x > 1490)
             return true;
-        if(y < 10 || y > 1690)
+        if(y < 0 || y > 1690)
             return true;
         for (var i = 0, len = buildings.length; i < len; i++) {
             if(collision(x, y, t, h, buildings[i])) {
@@ -114,11 +114,13 @@ function building(width, height, x, y) {
     this.x = x;
     this.y = y;
     // ----- USED TO PHYSICALLY DRAW BUILDINGS (FOR TESTING) --------
-    // this.update = function() {
-    //     ctx = map.context;
-    //     ctx.fillStyle = "black";
-    //     ctx.fillRect(this.x, this.y, this.width, this.height);
-    // }
+    this.update = function(x, y) {
+        ctx = map.context;
+        ctx.fillStyle = "black";
+        console.log("x " + x);
+        console.log("y " + y);
+        ctx.fillRect(this.x - (x - 250), this.y - (y - 200), this.width, this.height);
+    }
 }
 
 function opponent(username, color, x, y, width, height) {
@@ -140,9 +142,9 @@ function updateGameLocal() {
     map.update(myPlayer.x, myPlayer.y, myPlayer.color);
 
     // ----- USED TO PHYSICALLY DRAW BUILDINGS (FOR TESTING) --------
-    // for (var i = 0, len = buildings.length; i < len; i++) {
-    //    buildings[i].update();
-    // }
+    for (var i = 0, len = buildings.length; i < len; i++) {
+       buildings[i].update(myPlayer.x, myPlayer.y);
+    }
 
     for (var i = 0, len = opponents.length; i < len; i++) {
         if (opponents[i].userName != myUserName)
