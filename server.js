@@ -2,12 +2,30 @@
 var express = require('express');
 var routes = require('./routes.js');
 var bodyParser = require('body-parser');
-var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('resources/database.db');
+var mysql = require('mysql');
+var conn = mysql.createConnection({
+	host:'localhost',
+	user:'admin',
+	password:'thegame',
+	database:'TheGame'
+});
+conn.connect(function(err){
+	if(err)
+		console.log(err);
+	console.log("Database Connected");	
+});
 var session = require('express-session');
-var sqlite3Store = require('connect-sqlite3')(session);
+var mysqlStore = require('express-mysql-session')(session);
+var options = {
+    host: 'localhost',
+    port: 3306,
+    user: 'admin',
+    password: 'thegame',
+    database: 'TheGame'
+};
+ 
+var sessionStore = new mysqlStore(options);
 var app = express();
-var sessionStore = new sqlite3Store({dir: "resources/",db: "sessionsDB.db",table:"session"});
 app.use(bodyParser.json());
 
 app.use(session({
@@ -15,18 +33,19 @@ app.use(session({
 	resave: true,
 	saveUninitialized: true,
 	store: sessionStore,
-	cookie: { maxAge: 20*60*1000 } 
+	cookie: { maxAge: 20*60*1000 }
 }));
 
 app.use("/", function(request, response, next){
 	console.log(request.url);
-	db.get("SELECT username FROM users WHERE sessionID = ?",[request.session.id], function(err,row){
+	conn.query("SELECT username FROM users WHERE sessionID = ?",[request.session.id], function(err,row){
 		restrictedRoutes = /\/menu*|\/game*|\/account*/;
-		if(row == null){
+		if(row.length == 0){
 			if(request.url == '/' || request.url.match(restrictedRoutes) != null){
 				response.redirect('/login.html');
-				console.log("Cookie not found");
-				console.log(request.session.id);
+				console.log(row);
+				console.log("Cookie not found in Middleware");
+				console.log(request.cookie);
 			}
 			else{
 				next();
@@ -49,11 +68,6 @@ var server = app.listen(8081, function(){
 	var port = server.address().port;
 	console.log("Server running at http://%s:%s",host,port);
 })
-//MUST BE PERSISTANT EVENTUALLY
-db.serialize(function() {
-	db.run("DROP TABLE IF EXISTS users");
-	db.run("CREATE TABLE users (account_id TEXT, username TEXT, salt TEXT, hash TEXT, sessionID TEXT, color TEXT)");
-});
 
 //basic routes
 app.get('/', routes.home)
