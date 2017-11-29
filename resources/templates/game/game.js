@@ -86,11 +86,13 @@ function startGame() {
 
 var map = {
     canvas : document.createElement("canvas"),
+    width : 500,
+    height : 400,
     background : new Image(),
     context : undefined,
     start : function() {
-        this.canvas.width = 500;
-        this.canvas.height = 400;
+        this.canvas.width = this.width;
+        this.canvas.height = this.height;
         this.context = this.canvas.getContext("2d");
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.localInterval = setInterval(updateGameLocal, 20);
@@ -106,21 +108,22 @@ var map = {
             this.context.fillStyle = "white";
             this.context.strokeStyle = "red";
             this.context.lineWidth = 7;
-            move(top, left);
         }
         this.background.src = "map.jpg";
     },
     clear : function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     },
-    update : function() {
-        this.context.clearRect(0, 0, 500, 400);
-        this.context.drawImage(this.background, /*LEFT*/20, /*TOP*/20, 1000, 500, 0, 0, 1000, 500);
-        this.context.beginPath();
-        this.context.arc(500, 250, 10, 0, Math.PI * 2, false);
-        this.context.closePath();
+    update : function(x, y, color) {
+        this.context.clearRect(0, 0, this.width, this.height);
+        this.context.drawImage(this.background, /*LEFT*/x - (this.width / 2), /*TOP*/y - (this.height / 2), 1000, 500, 0, 0, 1000, 500);
+        // this.context.beginPath();
+        // this.context.arc(500, 250, 10, 0, Math.PI * 2, false);
+        // this.context.closePath();
         this.context.fill();
         this.context.stroke();
+        this.context.fillStyle = color;
+        this.context.fillRect((this.width / 2) - 10, (this.height / 2) - 10, 20, 20);
     }
 }
 
@@ -143,11 +146,11 @@ function player(width, height, color, x, y) {
         }
         return false;
     }
-    this.update = function() {
-        ctx = map.context;
-        ctx.fillStyle = color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-    }
+    // this.update = function() {
+    //     ctx = map.context;
+    //     ctx.fillStyle = color;
+    //     ctx.fillRect(this.x, this.y, this.width, this.height);
+    // }
     
     this.sendLocation = function() {
         //added temp username
@@ -161,7 +164,7 @@ function updatePlayers(data){
         console.log("adding " + key);
         console.log(data);
         console.log(data[key]);
-        newOpponents.push(new opponent(key, "blue", data[key].x, data[key].y, 15, 15));
+        newOpponents.push(new opponent(key, "blue", data[key].x, data[key].y, 20, 20));
     }
     opponents = newOpponents;
 }
@@ -172,11 +175,12 @@ function building(width, height, x, y) {
     this.height = height;
     this.x = x;
     this.y = y;
-    this.update = function() {
-        ctx = map.context;
-        ctx.fillStyle = "black";
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-    }
+    // ----- USED TO PHYSICALLY DRAW BUILDINGS (FOR TESTING) --------
+    // this.update = function() {
+    //     ctx = map.context;
+    //     ctx.fillStyle = "black";
+    //     ctx.fillRect(this.x, this.y, this.width, this.height);
+    // }
 }
 
 function opponent(username, color, x, y, width, height) {
@@ -195,15 +199,18 @@ function opponent(username, color, x, y, width, height) {
 function updateGameLocal() {
     map.clear();
     myPlayer.move();
-    myPlayer.update();
-    map.update();
-    for (var i = 0, len = buildings.length; i < len; i++) {
-       buildings[i].update();
-    }
-    for (var i = 0, len = opponents.length; i < len; i++) {
-        if (opponents[i].userName != myUserName)
-            opponents[i].update();
-     }
+    map.update(myPlayer.x, myPlayer.y, myPlayer.color);
+    
+    // myPlayer.update();
+    
+    // ----- USED TO PHYSICALLY DRAW BUILDINGS (FOR TESTING) --------
+    // for (var i = 0, len = buildings.length; i < len; i++) {
+    //    buildings[i].update();
+    // }
+    // for (var i = 0, len = opponents.length; i < len; i++) {
+    //     if (opponents[i].userName != myUserName)
+    //         opponents[i].update();
+    //  }
 }
 
 function updateGameRemote() {
