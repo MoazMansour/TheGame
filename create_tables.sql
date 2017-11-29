@@ -1,6 +1,12 @@
 DROP DATABASE IF EXISTS TheGame;
+DROP USER IF EXISTS admin;
 
 CREATE DATABASE TheGame;
+
+CREATE USER 'admin'@'localhost' IDENTIFIED BY 'thegame';
+GRANT ALL PRIVILEGES ON TheGame.* TO 'admin'@'localhost';
+FLUSH PRIVILEGES;
+
 USE TheGame;
 
 drop table if exists summons;
