@@ -21,7 +21,7 @@ function startGame() {
     myUserName = parseCookieData("userName=");
     myColor = parseCookieData("color=");
     myPlayer = new player(20, 20, myColor, 250, 200);
-    buildings[0] = new building(150, 70, 200, 50);
+    loadBuildings();
     map.start();
 }
 
@@ -57,10 +57,7 @@ var map = {
     },
     update : function(x, y, color) {
         this.context.clearRect(0, 0, this.width, this.height);
-        this.context.drawImage(this.background, /*LEFT*/x - (this.width / 2), /*TOP*/y - (this.height / 2), 1000, 500, 0, 0, 1000, 500);
-        // this.context.beginPath();
-        // this.context.arc(500, 250, 10, 0, Math.PI * 2, false);
-        // this.context.closePath();
+        this.context.drawImage(this.background, x - (this.width / 2), y - (this.height / 2), 1000, 500, 0, 0, 1000, 500);
         this.context.fill();
         this.context.stroke();
         this.context.fillStyle = color;
@@ -73,8 +70,7 @@ function player(width, height, color, x, y) {
     this.height = height;
     this.x = x;
     this.y = y;
-    /* change back to 1 after testing */
-    this.speed = 5;
+    this.speed = 5;/* change back to 1 after testing */
     this.move = function() {
         if(keys[83] && !this.collisionCheck(this.x, this.y + 1, this.width, this.height)) this.y += this.speed;
         if(keys[87] && !this.collisionCheck(this.x, this.y - 1, this.width, this.height)) this.y -= this.speed;
@@ -94,29 +90,23 @@ function player(width, height, color, x, y) {
         }
         return false;
     }
-    // this.update = function() {
-    //     ctx = map.context;
-    //     ctx.fillStyle = color;
-    //     ctx.fillRect(this.x, this.y, this.width, this.height);
-    // }
     
     this.sendLocation = function() {
         //added temp username
         socket.emit('updatePlayerLoc', {username: myUserName, loc: {x: this.x, y: this.y}, color: myColor });
     }
 }
-//--------------test--------------------------
+// add players from server data to local array
 function updatePlayers(data){
     newOpponents = []
     for(var key in data){
-        console.log("adding " + key);
-        console.log(data);
-        console.log(data[key]);
+        // console.log("adding " + key);
+        // console.log(data);
+        // console.log(data[key]);
         newOpponents.push(new opponent(key, "blue", data[key].x, data[key].y, 20, 20));
     }
     opponents = newOpponents;
 }
-//--------------test--------------------------
 
 function building(width, height, x, y) {
     this.width = width;
@@ -148,17 +138,16 @@ function updateGameLocal() {
     map.clear();
     myPlayer.move();
     map.update(myPlayer.x, myPlayer.y, myPlayer.color);
-    
-    // myPlayer.update();
-    
+
     // ----- USED TO PHYSICALLY DRAW BUILDINGS (FOR TESTING) --------
     // for (var i = 0, len = buildings.length; i < len; i++) {
     //    buildings[i].update();
     // }
-    // for (var i = 0, len = opponents.length; i < len; i++) {
-    //     if (opponents[i].userName != myUserName)
-    //         opponents[i].update();
-    //  }
+
+    for (var i = 0, len = opponents.length; i < len; i++) {
+        if (opponents[i].userName != myUserName)
+            opponents[i].update();
+     }
 }
 
 function updateGameRemote() {
@@ -208,5 +197,9 @@ function parseCookieData(key) {
     return "unknown";
 }
 
-startGame();
+function loadBuildings() {
+    buildings[0] = new building(150, 70, 200, 50);
+    //buildings[1] = new building(width, height, x, y);
+}
 
+startGame();
