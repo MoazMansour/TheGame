@@ -24,7 +24,7 @@ function logout() {
             console.log("log out error");
             // alert("you can never leave");
         }
-    }   
+    }
 }
 
 // adapted from https://www.w3schools.com/js/js_cookies.asp
