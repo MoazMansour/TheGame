@@ -59,6 +59,13 @@ html {
     color: rgb(0, 0, 0);
 }
 
+.account_info {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
 .topnav {
     background-color: #333;
     overflow: hidden;

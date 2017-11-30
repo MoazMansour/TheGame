@@ -4,11 +4,30 @@
         <link rel="stylesheet" href="game_style.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    </head>
-    <body>
         <script src="game.js" type="text/javascript"></script>
-        <!-- <p>Game Canvas</p>
-        <canvas id="game" width=1000 height=500></canvas> -->
-        <button type="button" onclick="logout()" >Logout</button>
+    </head>
+    <body onload="startGame()">
+      <div class="topnav" id="myTopnav">
+        <div class="global_header">
+          <div class="user" id="userName"></div>
+          <div class="clear"></div>
+        </div>
+      </div>
+
+      <div class="global_header">
+          <div class="user" id="userName"></div>
+          <div class="clear"></div>
+      </div>
+
+       <!-- <canvas id="gamecanvas" onclick="startGame()"></canvas> -->
+       <div class="center">
+        <div class ="sidebyside">
+          <button type="button" onclick="logout()" >Logout</button>
+        </div>
+        <div class ="sidebyside">
+          <button type="button" onclick="navigateToMenu()" >Main Menu</button>
+        </div>
+      </div>
+
     </body>
 </html>
