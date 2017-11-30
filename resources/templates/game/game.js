@@ -36,6 +36,7 @@ var map = {
     start : function() {
         this.canvas.width = this.width;
         this.canvas.height = this.height;
+        this.canvas.setAttribute('style', "padding: 0; margin: auto; display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; border-width:5px; border-style:ridge;"); 
         this.context = this.canvas.getContext("2d");
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.localInterval = setInterval(updateGameLocal, 20);
