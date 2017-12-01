@@ -1,6 +1,6 @@
 var keys = [];
 var buildings = [];
-var objects = [];
+var coins = [];
 var opponents = [];
 var myPlayer;
 var socket;
@@ -13,9 +13,9 @@ function startGame() {
     loadUsername();
     socket = io.connect('http://localhost:8081');
     socket.on('join', function (data) {
-        console.log("server confirm joined");
         // retrieve data about buildings
-        // emit my start location? unless set by server
+        // retrieve coin information
+        socket.emit('getCoins', true);
     });
     socket.on('playerLocUpdate', function(data){
         updatePlayers(JSON.parse(data));
@@ -128,6 +128,19 @@ function building(width, height, x, y) {
     */
 }
 
+function coin(index, x, y) {
+    this.index = index;
+    this.x = x;
+    this.y = y;
+    // draw coin on map
+    this.update = function(x, y) {
+        // TODO: Change this to be circles <--------------------
+        ctx = map.context;
+        ctx.fillStyle = "black";
+        ctx.fillRect(this.x - x, this.y - y, this.width, this.height);
+    }
+}
+
 function opponent(username, color, x, y, width, height) {
     this.userName = username;
     this.width = width;
@@ -146,17 +159,20 @@ function updateGameLocal() {
     myPlayer.move();
     map.update(myPlayer.x, myPlayer.y, myPlayer.color);
 
-    // ----- USED TO PHYSICALLY DRAW BUILDINGS (FOR TESTING) --------
-    /*
-    for (var i = 0, len = buildings.length; i < len; i++) {
-       buildings[i].update(scaleX(myPlayer.x), scaleY(myPlayer.y));
-    }
-    */
-
+    // Draw other players
     for (var i = 0, len = opponents.length; i < len; i++) {
         if (opponents[i].userName != myUserName)
             opponents[i].update(scaleX(myPlayer.x), scaleY(myPlayer.y));
-     }
+    }
+    // Draw coins
+    for (var i = 0, len = coins.length; i < len; i++) {
+        if (coins[i] != null)
+            coins[i].update(scaleX(myPlayer.x), scaleY(myPlayer.y));
+    }
+    // ----- USED TO PHYSICALLY DRAW BUILDINGS (FOR TESTING) --------
+    // for (var i = 0, len = buildings.length; i < len; i++) {
+    //    buildings[i].update(scaleX(myPlayer.x), scaleY(myPlayer.y));
+    // }
 }
 
 function updateGameRemote() {
