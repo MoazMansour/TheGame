@@ -162,15 +162,11 @@ io.on('connection', function (socket) {
 
 //TODO waiting on MO
 function coinReset(){
-	conn.query("SELECT random coin locations ", function(err, row){
+	conn.query("SELECT location FROM summons WHERE state_id = 1 ORDER BY RAND() LIMIT 3 ", function(err, row){
 		if(err)
 			console.log(err);
 		else{
-			coinLoc = [];
-			row.forEach(element => {
-				console.log(element.x + " " + element.y);
-				coinLoc.push({"x":element.x, "y":element.y});
-			});
+			console.log(row);
 		}
 	});
 

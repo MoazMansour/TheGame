@@ -203,11 +203,16 @@ function coin(index, x, y) {
     this.size = 12;
     // draw coin on map
     this.update = function(x, y) {
-        // TODO: Change this to be circles <--------------------
         ctx = map.context;
-        ctx.fillStyle = "black";
-        ctx.fillRect(this.x - x, this.y - y, this.size, this.size);
+        ctx.beginPath();
+        ctx.arc(this.x - x, this.y - y, 3, 0, 2 * Math.PI, false);
+        ctx.fillStyle = 'yellow';
+        ctx.fill();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'black';
+        ctx.stroke();
     }
+    
     this.collision = function(x, y, width, height) {
         if (x < this.x + this.size &&
             x + width > this.x &&
