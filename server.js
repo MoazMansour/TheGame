@@ -109,14 +109,15 @@ app.post('/updateColor', routes.updateColor)
 
 //object to store locations of players and coins
 var userLoc = {};
-var coinLoc = [];
+var coinLoc = [{"x": 10, "y": 20}, {"x": 50, "y": 50}, {"x": 90, "y": 90}];
 
 var io = require('socket.io')(server);
 io.on('connection', function (socket) {
+	var client = socket.id;
 	console.log("----SOCKET CREATED----");
 	// QUERY DATABASE FOR BUILDINGS AND OBJECTS
 	socket.emit('join', "You have successfully joined");
-
+	console.log("ID :" + client);
 	socket.on('updatePlayerLoc', function(data) {
 		// Save player info in DB or maintain local list?
 		// Data recieved is in format {username : <username> loc: {x: <int x>, y: <int y>} color: <red>
@@ -129,7 +130,7 @@ io.on('connection', function (socket) {
 		console.log(JSON.stringify(userLoc));
 
 		socket.emit('playerLocUpdate', JSON.stringify(userLoc));
-		socket.emit('coinLocUpdate', (coinLoc));
+		io.to(client).emit('scoreUpdate', 1);
 	})
 
 	//remove player form userLoc when he logs out
@@ -138,14 +139,34 @@ io.on('connection', function (socket) {
 		console.log("User " + data + " has been logged out");
 	})
 
-	socket.on('coinCollect', function(data){
+	//removes coin from coin array 
+	socket.on('collectCoin', function(data){
 		//Make changed to coinLoc
+		coinLoc[data] = null;
+		console.log(data);
+		console.log(coinLoc);
+		socket.broadcast.emit('removeCoin', data);
+	})
 
-		socket.emit('coinLocUpdate', (coinLoc));
+	//sends coin array to user 
+	socket.on('getCoins', function(data){
+		console.log("sending coin array");
+		socket.emit('coinData', coinLoc);
 	})
 })
 
+//TODO waiting on MO
+function coinReset(){
+	conn.query("SELECT random coin locations ", function(err, row){
+		if(err)
+			console.log(err);
+		else{
+			coinLoc = [];
+			row.forEach(element => {
+				console.log(element.x + " " + element.y);
+				coinLoc.push({"x":element.x, "y":element.y});
+			});
+		}
+	});
 
-function randLoc(){
-	conn.query("SELECT ")
 }
