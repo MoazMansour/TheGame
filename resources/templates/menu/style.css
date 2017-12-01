@@ -21,8 +21,11 @@ html {
 }
 
 
-.body {
-    border: 0px ;
+html {
+  background-image: url("/mapbk.jpg");
+  background-position: center center fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .clear {
