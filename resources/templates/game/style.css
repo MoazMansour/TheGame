@@ -70,3 +70,7 @@ button:hover {
   min-height: 40px;
   vertical-align: top;
 }
+
+#gamecanvas{
+  height: 650;
+}
