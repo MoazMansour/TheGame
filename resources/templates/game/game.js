@@ -9,6 +9,7 @@ var myColor;
 var windowWidth = 500;
 var windowHeight = 400;
 
+// /* -------------- SYSTEM FUNCTIONALITY -------------- */
 function startGame() {
     loadUsername();
     socket = io.connect('http://localhost:8081');
@@ -21,7 +22,6 @@ function startGame() {
         updatePlayers(JSON.parse(data));
     });
 
-
     myUserName = parseCookieData("userName=");
     myColor = parseCookieData("color=");
     myPlayer = new player(20, 20, myColor, 1215, 1455);
@@ -29,6 +29,49 @@ function startGame() {
     map.start();
 }
 
+// adapted from https://www.w3schools.com/js/js_cookies.asp
+function parseCookieData(key) {
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(key) == 0) {
+            return c.substring(key.length, c.length);
+        }
+    }
+    return "unknown";
+}
+
+function loadUsername() {
+    username = parseCookieData("userName=");
+    document.getElementById("userName").textContent = "Welcome " + username + "!";
+}
+
+function navigateToMenu() {
+    window.location = "/menu.html";
+}
+
+function logout() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "logout", true);
+    xhr.send();
+    socket.emit('logout', myUserName);
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState === 4 && xhr.status == 200){
+            window.location = "/login.html";
+        }
+        else{
+            console.log("log out error");
+            // alert("you can never leave");
+        }
+    }
+}
+
+/* -------------- GAME OBJECTS -------------- */
+// Map object
 var map = {
     canvas : document.createElement("canvas"),
     width : windowWidth,
@@ -70,6 +113,7 @@ var map = {
     }
 }
 
+// Player Object
 function player(width, height, color, x, y) {
     this.width = width;
     this.height = height;
@@ -101,18 +145,8 @@ function player(width, height, color, x, y) {
         socket.emit('updatePlayerLoc', {username: myUserName, loc: {x: this.x, y: this.y}, color: myColor });
     }
 }
-// add players from server data to local array
-function updatePlayers(data){
-    newOpponents = []
-    for(var key in data){
-        // console.log("adding " + key);
-        // console.log(data);
-        // console.log(data[key]);
-        newOpponents.push(new opponent(key, "blue", data[key].x, data[key].y, 20, 20));
-    }
-    opponents = newOpponents;
-}
 
+// Building Object
 function building(width, height, x, y) {
     this.width = width;
     this.height = height;
@@ -128,6 +162,7 @@ function building(width, height, x, y) {
     */
 }
 
+// Coin Object
 function coin(index, x, y) {
     this.index = index;
     this.x = x;
@@ -141,6 +176,7 @@ function coin(index, x, y) {
     }
 }
 
+// Opponent Object
 function opponent(username, color, x, y, width, height) {
     this.userName = username;
     this.width = width;
@@ -154,6 +190,20 @@ function opponent(username, color, x, y, width, height) {
     }
 }
 
+/* -------------- GAME FUNCTIONS -------------- */
+// add players from server data to local array
+function updatePlayers(data){
+    newOpponents = []
+    for(var key in data){
+        // console.log("adding " + key);
+        // console.log(data);
+        // console.log(data[key]);
+        newOpponents.push(new opponent(key, "blue", data[key].x, data[key].y, 20, 20));
+    }
+    opponents = newOpponents;
+}
+
+// redraw game locally
 function updateGameLocal() {
     map.clear();
     myPlayer.move();
@@ -175,10 +225,12 @@ function updateGameLocal() {
     // }
 }
 
+// update server with location
 function updateGameRemote() {
     myPlayer.sendLocation();
 }
 
+// collision function for buildings
 function collision(x, y, width, height, building) {
     if (x < building.x + building.width &&
         x + width > building.x &&
@@ -190,36 +242,12 @@ function collision(x, y, width, height, building) {
     }
 }
 
-function logout() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "logout", true);
-    xhr.send();
-    socket.emit('logout', myUserName);
-    xhr.onreadystatechange = function(){
-        if(xhr.readyState === 4 && xhr.status == 200){
-            window.location = "/login.html";
-        }
-        else{
-            console.log("log out error");
-            // alert("you can never leave");
-        }
-    }
+function scaleX(x) {
+    return x - (windowWidth / 2);
 }
 
-// adapted from https://www.w3schools.com/js/js_cookies.asp
-function parseCookieData(key) {
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(key) == 0) {
-            return c.substring(key.length, c.length);
-        }
-    }
-    return "unknown";
+function scaleY(y) {
+    return y - (windowHeight / 2);
 }
 
 function loadBuildings() {
@@ -269,21 +297,4 @@ function loadBuildings() {
     buildings[43] = new building(155, 250, 1152, 987);  //RushRhees
 
     //buildings[n] = new building(width, height, x, y);
-}
-
-function scaleX(x) {
-    return x - (windowWidth / 2);
-}
-
-function scaleY(y) {
-    return y - (windowHeight / 2);
-}
-
-function loadUsername() {
-    username = parseCookieData("userName=");
-    document.getElementById("userName").textContent = "Welcome " + username + "!";
-}
-
-function navigateToMenu() {
-    window.location = "/menu.html";
 }
