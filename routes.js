@@ -55,7 +55,7 @@ exports.getSalt = function(request, response) {
 }
 
 exports.loginPost = function(request, response) {
-	conn.query("SELECT username, hash FROM users WHERE username = ?", [request.body.username],function(err, row){
+	conn.query("SELECT username, hash, color FROM users WHERE username = ?", [request.body.username],function(err, row){
 		if(err) {
 			return console.log(err);
 		}
@@ -63,6 +63,7 @@ exports.loginPost = function(request, response) {
 			console.log("User authenticated");
 			saveLogin(request.session.id, request.body.username);
 			response.cookie('userName', request.body.username, { maxAge: 900000, httpOnly: false });
+			response.cookie('color', row[0].color, {maxAge: 900000, httpOnly: false, encode: String});
 			response.send({ redirect: '/' });
 		}
 		else {

@@ -36,6 +36,7 @@ app.use(session({
 	cookie: { maxAge: 20*60*1000 }
 }));
 
+//Middleware for persistent login
 app.use("/", function(request, response, next){
 	console.log(request.url);
 	conn.query("SELECT username FROM users WHERE sessionID = ?",[request.session.id], function(err,row){
@@ -106,8 +107,9 @@ app.post('/updateColor', routes.updateColor)
 // GAME SOCKET STUFF BELOW HERE
 // (eventually move to another file)
 
-//object to store locations of players
+//object to store locations of players and coins
 var userLoc = {};
+var coinLoc = [];
 
 var io = require('socket.io')(server);
 io.on('connection', function (socket) {
@@ -127,6 +129,7 @@ io.on('connection', function (socket) {
 		console.log(JSON.stringify(userLoc));
 
 		socket.emit('playerLocUpdate', JSON.stringify(userLoc));
+		socket.emit('coinLocUpdate', (coinLoc));
 	})
 
 	//remove player form userLoc when he logs out
@@ -134,4 +137,15 @@ io.on('connection', function (socket) {
 		delete userLoc[data];
 		console.log("User " + data + " has been logged out");
 	})
+
+	socket.on('coinCollect', function(data){
+		//Make changed to coinLoc
+
+		socket.emit('coinLocUpdate', (coinLoc));
+	})
 })
+
+
+function randLoc(){
+	conn.query("SELECT ")
+}

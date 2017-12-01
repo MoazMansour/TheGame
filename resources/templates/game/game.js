@@ -21,6 +21,7 @@ function startGame() {
         updatePlayers(JSON.parse(data));
     });
 
+
     myUserName = parseCookieData("userName=");
     myColor = parseCookieData("color=");
     myPlayer = new player(20, 20, myColor, 1215, 1455);
