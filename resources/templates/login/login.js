@@ -55,7 +55,7 @@ function goback() {
 }
 
 function gohome() {
-    window.location = "/index.html";
+    window.location = "/login.html";
 }
 
 function signup() {
