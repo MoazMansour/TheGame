@@ -28,9 +28,11 @@ function startGame() {
     });
     socket.on('scoreUpdate', function(data) {
         score += data;
+        console.log(score);
     });
     socket.on('removeCoin', function(data) {
         coins[data] = null;
+        console.log(coins);
     })
 
     myUserName = parseCookieData("userName=");

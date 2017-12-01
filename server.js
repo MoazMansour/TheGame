@@ -130,7 +130,7 @@ io.on('connection', function (socket) {
 		console.log(JSON.stringify(userLoc));
 
 		socket.emit('playerLocUpdate', JSON.stringify(userLoc));
-		io.to(client).emit('scoreUpdate', 1);
+		
 	})
 
 	//remove player form userLoc when he logs out
@@ -142,7 +142,12 @@ io.on('connection', function (socket) {
 	//removes coin from coin array 
 	socket.on('collectCoin', function(data){
 		//Make changed to coinLoc
-		coinLoc[data] = null;
+		if (coinLoc[data] == null) {
+			io.to(client).emit('scoreUpdate', 0);
+		} else {
+			coinLoc[data] = null;
+			io.to(client).emit('scoreUpdate', 1);
+		}
 		console.log(data);
 		console.log(coinLoc);
 		socket.broadcast.emit('removeCoin', data);
