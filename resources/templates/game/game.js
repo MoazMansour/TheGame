@@ -8,6 +8,7 @@ var myUserName;
 var myColor;
 var windowWidth = 500;
 var windowHeight = 400;
+var score = 0;
 
 // /* -------------- SYSTEM FUNCTIONALITY -------------- */
 function startGame() {
@@ -24,6 +25,12 @@ function startGame() {
     socket.on('coinData', function(data) {
         updateCoins(JSON.parse(data));
     });
+    socket.on('scoreUpdate', function(data) {
+        score += data;
+    });
+    socket.on('removeCoin', function(data) {
+        coins[data] = null;
+    })
 
     myUserName = parseCookieData("userName=");
     myColor = parseCookieData("color=");
