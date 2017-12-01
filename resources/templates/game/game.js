@@ -131,10 +131,10 @@ function player(width, height, color, x, y) {
     this.y = y;
     this.speed = 1; /* change back to 1 after testing */
     this.move = function() {
-        if(keys[83] && !this.collisionCheck(this.x, this.y + 1, this.width, this.height)) this.y += this.speed;
-        if(keys[87] && !this.collisionCheck(this.x, this.y - 1, this.width, this.height)) this.y -= this.speed;
-        if(keys[68] && !this.collisionCheck(this.x + 1, this.y, this.width, this.height)) this.x += this.speed;
-        if(keys[65] && !this.collisionCheck(this.x - 1, this.y, this.width, this.height)) this.x -= this.speed;
+        if(keys[83] && !this.collisionCheck(this.x, this.y + this.speed, this.width, this.height)) this.y += this.speed;
+        if(keys[87] && !this.collisionCheck(this.x, this.y - this.speed, this.width, this.height)) this.y -= this.speed;
+        if(keys[68] && !this.collisionCheck(this.x + this.speed, this.y, this.width, this.height)) this.x += this.speed;
+        if(keys[65] && !this.collisionCheck(this.x - this.speed, this.y, this.width, this.height)) this.x -= this.speed;
         // Check for collected coins
         this.coinCheck();
     }
@@ -145,7 +145,7 @@ function player(width, height, color, x, y) {
         if(y < 0 || y > 2180)
             return true;
         for (var i = 0, len = buildings.length; i < len; i++) {
-            if(collision(x, y, t, h, buildings[i])) {
+            if(buildings[i].collision(this.x, this.y, this.width, this.height)) {
                 return true;
             }
         }
@@ -173,6 +173,16 @@ function building(width, height, x, y) {
     this.height = height;
     this.x = x;
     this.y = y;
+    this.collision = function (x, y, width, height) {
+        if (x < this.x + this.width &&
+            x + width > this.x &&
+            y < this.y + this.height &&
+            y + height > this.y) {
+                return true;
+        } else {
+            return false;
+        }
+    }
     // ----- USED TO PHYSICALLY DRAW BUILDINGS (FOR TESTING) --------
     /*
     this.update = function(x, y) {
@@ -200,7 +210,7 @@ function coin(index, x, y) {
         if (x < this.x + this.size &&
             x + width > this.x &&
             y < this.y + this.size &&
-            y + height> this.y) {
+            y + height > this.y) {
                 return true;
         } else {
             return false;
@@ -270,20 +280,6 @@ function updateGameLocal() {
 function updateGameRemote() {
     myPlayer.sendLocation();
 }
-
-// collision function for buildings
-function collision(x, y, width, height, building) {
-    if (x < building.x + building.width &&
-        x + width > building.x &&
-        y < building.y + building.height &&
-        y + height> building.y) {
-            return true;
-    } else {
-        return false;
-    }
-}
-
-
 
 function scaleX(x) {
     return x - (windowWidth / 2);
