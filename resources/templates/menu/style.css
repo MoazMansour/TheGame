@@ -1,19 +1,25 @@
-.global_header {
+ .global_header {
     height: 50px;
 }
 
-/*.user {
+ #userName {
     float: center;
-    color: #f2f2f2;
-    text-align: center;
-    padding: 10px 16px;
-    text-decoration: none;
-    font-size: 32px;
-}*/
+    margin-right: 40px;
+    font-size: 30px;
+}
 
 * {
   box-sizing: border-box;
 }
+
+
+html {
+  background-image: url("mapbk.jpg");
+  background-position: center center fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 
 html {
   background-image: url("/mapbk.jpg");
@@ -75,4 +81,9 @@ html {
     padding: 14px 16px;
     text-decoration: none;
     font-size: 17px;
+}
+.account_info {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
 }
