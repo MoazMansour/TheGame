@@ -128,6 +128,8 @@ function player(width, height, color, x, y) {
         if(keys[87] && !this.collisionCheck(this.x, this.y - 1, this.width, this.height)) this.y -= this.speed;
         if(keys[68] && !this.collisionCheck(this.x + 1, this.y, this.width, this.height)) this.x += this.speed;
         if(keys[65] && !this.collisionCheck(this.x - 1, this.y, this.width, this.height)) this.x -= this.speed;
+        // Check for collected coins
+        this.coinCheck();
     }
     this.collisionCheck = function(x, y, t, h) {
         // TODO: ADJUST UPPER BOUNDS FOR SIZE OF MAP
@@ -141,6 +143,15 @@ function player(width, height, color, x, y) {
             }
         }
         return false;
+    }
+
+    this.coinCheck = function () {
+        for (var i = 0, len = coins.length; i < len; i++) {
+            if(coins[i].collision(this.x, this.y, this.width, this.height)) {
+                coins[i] = null;
+                socket.emit('collectCoin', i);
+            }
+        }
     }
 
     this.sendLocation = function() {
@@ -170,12 +181,23 @@ function coin(index, x, y) {
     this.index = index;
     this.x = x;
     this.y = y;
+    this.size = 12;
     // draw coin on map
     this.update = function(x, y) {
         // TODO: Change this to be circles <--------------------
         ctx = map.context;
         ctx.fillStyle = "black";
         ctx.fillRect(this.x - x, this.y - y, this.width, this.height);
+    }
+    this.collision = function(x, y, width, height) {
+        if (x < this.x + this.size &&
+            x + width > this.x &&
+            y < this.y + this.size &&
+            y + height> this.y) {
+                return true;
+        } else {
+            return false;
+        }
     }
 }
 
@@ -253,6 +275,8 @@ function collision(x, y, width, height, building) {
         return false;
     }
 }
+
+
 
 function scaleX(x) {
     return x - (windowWidth / 2);
