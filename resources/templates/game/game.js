@@ -23,7 +23,8 @@ function startGame() {
         updatePlayers(JSON.parse(data));
     });
     socket.on('coinData', function(data) {
-        updateCoins(JSON.parse(data));
+        console.log(data);
+        updateCoins(data);
     });
     socket.on('scoreUpdate', function(data) {
         score += data;
@@ -131,6 +132,7 @@ function player(width, height, color, x, y) {
     this.y = y;
     this.speed = 1; /* change back to 1 after testing */
     this.move = function() {
+        // console.log(this.x + ", " + this.y);
         if(keys[83] && !this.collisionCheck(this.x, this.y + this.speed)) this.y += this.speed;
         if(keys[87] && !this.collisionCheck(this.x, this.y - this.speed)) this.y -= this.speed;
         if(keys[68] && !this.collisionCheck(this.x + this.speed, this.y)) this.x += this.speed;
@@ -154,7 +156,7 @@ function player(width, height, color, x, y) {
 
     this.coinCheck = function () {
         for (var i = 0, len = coins.length; i < len; i++) {
-            if(coins[i].collision(this.x, this.y, this.width, this.height)) {
+            if(coins[i] != null && coins[i].collision(this.x, this.y, this.width, this.height)) {
                 coins[i] = null;
                 socket.emit('collectCoin', i);
             }
@@ -204,7 +206,7 @@ function coin(index, x, y) {
         // TODO: Change this to be circles <--------------------
         ctx = map.context;
         ctx.fillStyle = "black";
-        ctx.fillRect(this.x - x, this.y - y, this.width, this.height);
+        ctx.fillRect(this.x - x, this.y - y, this.size, this.size);
     }
     this.collision = function(x, y, width, height) {
         if (x < this.x + this.size &&
@@ -248,7 +250,8 @@ function updatePlayers(data){
 function updateCoins(data) {
     newCoins = [];
     for(var i = 0, len = data.length; i < len; i++) {
-        newCoins.push(new coin(i, data[i].x, data[i].y));
+        if(data[i] != null)
+            newCoins.push(new coin(i, data[i].x, data[i].y));
     }
     coins = newCoins;
 }

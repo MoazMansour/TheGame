@@ -109,7 +109,7 @@ app.post('/updateColor', routes.updateColor)
 
 //object to store locations of players and coins
 var userLoc = {};
-var coinLoc = [{"x": 10, "y": 20}, {"x": 50, "y": 50}, {"x": 90, "y": 90}];
+var coinLoc = [{"x": 10, "y": 20}, {"x": 1251, "y": 1569}, {"x": 1210, "y": 1364}];
 
 var io = require('socket.io')(server);
 io.on('connection', function (socket) {
