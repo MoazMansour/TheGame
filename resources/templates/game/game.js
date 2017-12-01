@@ -131,21 +131,21 @@ function player(width, height, color, x, y) {
     this.y = y;
     this.speed = 1; /* change back to 1 after testing */
     this.move = function() {
-        if(keys[83] && !this.collisionCheck(this.x, this.y + this.speed, this.width, this.height)) this.y += this.speed;
-        if(keys[87] && !this.collisionCheck(this.x, this.y - this.speed, this.width, this.height)) this.y -= this.speed;
-        if(keys[68] && !this.collisionCheck(this.x + this.speed, this.y, this.width, this.height)) this.x += this.speed;
-        if(keys[65] && !this.collisionCheck(this.x - this.speed, this.y, this.width, this.height)) this.x -= this.speed;
+        if(keys[83] && !this.collisionCheck(this.x, this.y + this.speed)) this.y += this.speed;
+        if(keys[87] && !this.collisionCheck(this.x, this.y - this.speed)) this.y -= this.speed;
+        if(keys[68] && !this.collisionCheck(this.x + this.speed, this.y)) this.x += this.speed;
+        if(keys[65] && !this.collisionCheck(this.x - this.speed, this.y)) this.x -= this.speed;
         // Check for collected coins
         this.coinCheck();
     }
-    this.collisionCheck = function(x, y, t, h) {
+    this.collisionCheck = function(x, y) {
         // TODO: ADJUST UPPER BOUNDS FOR SIZE OF MAP
         if(x < 0 || x > 2180)
             return true;
         if(y < 0 || y > 2180)
             return true;
         for (var i = 0, len = buildings.length; i < len; i++) {
-            if(buildings[i].collision(this.x, this.y, this.width, this.height)) {
+            if(buildings[i].collision(x, y, this.width, this.height)) {
                 return true;
             }
         }
