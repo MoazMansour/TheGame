@@ -21,6 +21,9 @@ function startGame() {
     socket.on('playerLocUpdate', function(data){
         updatePlayers(JSON.parse(data));
     });
+    socket.on('coinData', function(data) {
+        updateCoins(JSON.parse(data));
+    });
 
     myUserName = parseCookieData("userName=");
     myColor = parseCookieData("color=");
@@ -193,7 +196,7 @@ function opponent(username, color, x, y, width, height) {
 /* -------------- GAME FUNCTIONS -------------- */
 // add players from server data to local array
 function updatePlayers(data){
-    newOpponents = []
+    newOpponents = [];
     for(var key in data){
         // console.log("adding " + key);
         // console.log(data);
@@ -202,6 +205,15 @@ function updatePlayers(data){
     }
     opponents = newOpponents;
 }
+
+function updateCoins(data) {
+    newCoins = [];
+    for(var i = 0, len = data.length; i < len; i++) {
+        newCoins.push(new coin(i, data[i].x, data[i].y));
+    }
+    coins = newCoins;
+}
+
 
 // redraw game locally
 function updateGameLocal() {
