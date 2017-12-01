@@ -1,9 +1,17 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('resources/database.db');
-var shortId = require('shortid');
-
+var mysql = require('mysql');
+var conn = mysql.createConnection({
+	host:'localhost',
+	user:'admin',
+	password:'thegame',
+	database:'TheGame'
+});
+conn.connect(function(err){
+	if(err)
+		console.log(err);
+	console.log("Database Connected");
+});
 var app = express();
 var server = require('http').Server(app);
 
@@ -15,7 +23,7 @@ app.use(bodyParser.json());
 //routes
 //--------------------------------------------------------------------------
 exports.logout = function(request,response){
-	db.run("UPDATE users SET sessionID = ? WHERE sessionID = ?", ["loggedout", request.session.id], function(err){
+	conn.query("UPDATE users SET sessionID = ? WHERE sessionID = ?", ["loggedout", request.session.id], function(err){
 		if(err){
 			console.log(err);
 			response.sendStatus(500);
@@ -24,20 +32,20 @@ exports.logout = function(request,response){
 			console.log("User Logged out");
 			response.sendStatus(200);
 		}
-		
+
 	})
 }
 
 exports.getSalt = function(request, response) {
 	console
-	db.get("SELECT salt FROM users WHERE username = ?",[request.body.username], function(err, row){
+	conn.query("SELECT salt FROM users WHERE username = ?",[request.body.username], function(err, row){
 		if(err){
 			console.log("ERROR!!");
 		 	return console.log(err);
 		}
 		if(row != null ){
-			console.log("salt here : "+ row.salt);
-			response.send({salt: row.salt});
+			console.log("salt here : "+ row[0].salt);
+			response.send({salt: row[0].salt});
 		}
 		else{
 			console.log("Username does not exist");
@@ -47,15 +55,16 @@ exports.getSalt = function(request, response) {
 }
 
 exports.loginPost = function(request, response) {
-	db.get("SELECT username, hash FROM users WHERE username = ?", [request.body.username],function(err, row){
+	conn.query("SELECT username, hash, color FROM users WHERE username = ?", [request.body.username],function(err, row){
 		if(err) {
 			return console.log(err);
 		}
-		if(row.hash == request.body.hash) {
+		if(row[0].hash == request.body.hash) {
 			console.log("User authenticated");
 			saveLogin(request.session.id, request.body.username);
 			response.cookie('userName', request.body.username, { maxAge: 900000, httpOnly: false });
-			response.send({ redirect: '/' });	
+			response.cookie('color', row[0].color, {maxAge: 900000, httpOnly: false, encode: String});
+			response.send({ redirect: '/' });
 		}
 		else {
 			response.send(404);
@@ -66,36 +75,36 @@ exports.loginPost = function(request, response) {
 }
 
 exports.signupPost = function(request, response) {
-	db.get("SELECT username FROM users WHERE username = ?", [request.body.username], function(err, row) {
+	conn.query("SELECT username FROM users WHERE username = ?", [request.body.username], function(err, row) {
 		if(err) {
 			return console.log(err);
 		}
-		if(row != null) {
+		if(row.length != 0) {
 			// Handle response that username exists
 			response.sendStatus(404);
 		} else {
-			db.run("INSERT INTO users VALUES(?, ?, ?, ?, ?, ?)", [shortId.generate(), request.body.username, request.body.salt, request.body.hash, "", request.body.color], function(err) {
-				console.log(request.body);	
+			conn.query("INSERT INTO users (username,salt,hash,sessionID,color) VALUES(?,?,?,?,?);", [request.body.username, request.body.salt, request.body.hash, "", request.body.color], function(err) {
+				console.log(request.body);
 					if(err)
 						return console.log(err);
 					else
 						saveLogin(request.session.id, request.body.username);
-						response.cookie('userName', request.body.username, { maxAge: 900000, httpOnly: false });
+						response.cookie('username', request.body.username, { maxAge: 900000, httpOnly: false });
 						response.cookie('color', request.body.color, {maxAge: 900000, httpOnly: false, encode: String});
 						response.send({ redirect: '/' });
 						console.log("USER ADDED");
-						db.each("SELECT * from users", function(err, row){
-							console.log("Username: " + row.username + " Account ID: "+row.account_id+" Salt: " + row.salt + " Hash: " + row.hash+ " Session ID: " + row.sessionID + " Color: " + row.color);
-						}); 
+						conn.query("SELECT * from users", function(err, row){
+							console.log("Username: " + row[0].username +" Salt: " + row[0].salt + " Hash: " + row[0].hash+ " Session ID: " + row[0].sessionID + " Color: " + row[0].color);
+						});
 				});
 		}
 	});
 
-	
+
 }
 
 function saveLogin (sid, username){
-	db.run("UPDATE users SET sessionID = ? WHERE username = ?",[sid, username], function(err){
+	conn.query("UPDATE users SET sessionID = ? WHERE username = ?",[sid, username], function(err){
 		if(err)
 			return console.log(err);
 	} )
@@ -127,7 +136,7 @@ exports.menustyle = function(request, response){
 // Account page routes:
 exports.updateColor = function(request, response){
 	console.log("Color: " + request.body.color);
-	db.run("UPDATE users SET color = ? WHERE sessionID = ?", [request.body.color, request.session.id], function(err){
+	conn.query("UPDATE users SET color = ? WHERE sessionID = ?", [request.body.color, request.session.id], function(err){
 		if(err){
 			console.log(err);
 			response.sendStatus(500);
@@ -137,10 +146,10 @@ exports.updateColor = function(request, response){
 			response.sendStatus(200);
 		}
 	})
-	db.each("SELECT * from users", function(err, row){
-		console.log("Username: " + row.username + " Account ID: "+row.account_id+" Salt: " + row.salt + " Hash: " + row.hash+ " Session ID: " + row.sessionID + " Color: " + row.color);
-	}); 
-	
+	conn.query("SELECT * from users", function(err, row){
+		console.log("Username: " + row[0].username + " Account ID: "+row[0].account_id+" Salt: " + row[0].salt + " Hash: " + row[0].hash+ " Session ID: " + row[0].sessionID + " Color: " + row[0].color);
+	});
+
 }
 
 exports.account = function(request, response){
@@ -237,9 +246,9 @@ exports.gamejs = function(request, response) {
 	console.log("game.js sent");
 }
 
-exports.entryStyle = function(request, response) {
-	response.sendFile(__dirname + '/resources/templates/login/style.css');
-	console.log("entry_style.css sent");
+exports.gameStyle = function(request, response) {
+	response.sendFile(__dirname + '/resources/templates/game/style.css');
+	console.log("game_style.css sent");
 }
 //---------------------------
 //TheGame Common style file and background
@@ -254,7 +263,9 @@ exports.background = function(request, response) {
 	console.log("background.jpg sent");
 }
 
-
+exports.mapbk = function (request, response){
+	response.sendFile (__dirname + '/resources/templates/menu/mapbk.jpg');
+}
 
 /*
  * Sample Image route function

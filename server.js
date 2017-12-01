@@ -2,12 +2,30 @@
 var express = require('express');
 var routes = require('./routes.js');
 var bodyParser = require('body-parser');
-var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('resources/database.db');
+var mysql = require('mysql');
+var conn = mysql.createConnection({
+	host:'localhost',
+	user:'admin',
+	password:'thegame',
+	database:'TheGame'
+});
+conn.connect(function(err){
+	if(err)
+		console.log(err);
+	console.log("Database Connected");
+});
 var session = require('express-session');
-var sqlite3Store = require('connect-sqlite3')(session);
+var mysqlStore = require('express-mysql-session')(session);
+var options = {
+    host: 'localhost',
+    port: 3306,
+    user: 'admin',
+    password: 'thegame',
+    database: 'TheGame'
+};
+
+var sessionStore = new mysqlStore(options);
 var app = express();
-var sessionStore = new sqlite3Store({dir: "resources/",db: "sessionsDB.db",table:"session"});
 app.use(bodyParser.json());
 
 app.use(session({
@@ -15,18 +33,20 @@ app.use(session({
 	resave: true,
 	saveUninitialized: true,
 	store: sessionStore,
-	cookie: { maxAge: 20*60*1000 } 
+	cookie: { maxAge: 20*60*1000 }
 }));
 
+//Middleware for persistent login
 app.use("/", function(request, response, next){
 	console.log(request.url);
-	db.get("SELECT username FROM users WHERE sessionID = ?",[request.session.id], function(err,row){
+	conn.query("SELECT username FROM users WHERE sessionID = ?",[request.session.id], function(err,row){
 		restrictedRoutes = /\/menu*|\/game*|\/account*/;
-		if(row == null){
+		if(row.length == 0){
 			if(request.url == '/' || request.url.match(restrictedRoutes) != null){
 				response.redirect('/login.html');
-				console.log("Cookie not found");
-				console.log(request.session.id);
+				console.log(row);
+				console.log("Cookie not found in Middleware");
+				console.log(request.cookie);
 			}
 			else{
 				next();
@@ -39,8 +59,8 @@ app.use("/", function(request, response, next){
 			}
 		}
 	});
-	
-	
+
+
 });
 
 //creating server
@@ -49,11 +69,6 @@ var server = app.listen(8081, function(){
 	var port = server.address().port;
 	console.log("Server running at http://%s:%s",host,port);
 })
-//MUST BE PERSISTANT EVENTUALLY
-db.serialize(function() {
-	db.run("DROP TABLE IF EXISTS users");
-	db.run("CREATE TABLE users (account_id TEXT, username TEXT, salt TEXT, hash TEXT, sessionID TEXT, color TEXT)");
-});
 
 //basic routes
 app.get('/', routes.home)
@@ -69,7 +84,7 @@ app.get('/login.js', routes.loginjs)
 app.get('/md5.js', routes.md5)
 app.get('/login.html', routes.login)
 app.get('/signup.html', routes.signup)
-app.get('/entry_style.css', routes.entryStyle)
+app.get('/entry_style.css', routes.style)
 app.get('/menu.html', routes.menu)
 app.get('/menu.js', routes.menujs)
 app.get('/menu_style.css', routes.menustyle)
@@ -78,8 +93,10 @@ app.get('/account.js', routes.accountjs)
 app.get('/account_style.css', routes.accountstyle)
 app.get('/game.html', routes.game)
 app.get('/game.js', routes.gamejs)
-app.get('/game_style.css', routes.style)
+app.get('/game_style.css', routes.gameStyle)
+app.get('/style.css', routes.style)
 app.get('/map.jpg', routes.gameBackground)
+app.get('/mapbk.jpg', routes.mapbk)
 app.post('/logout', routes.logout)
 app.post('/getSalt',routes.getSalt)
 app.post('/login', routes.loginPost)
@@ -87,18 +104,19 @@ app.post('/signUp', routes.signupPost)
 app.post('/updateColor', routes.updateColor)
 
 
-// GAME SOCKET STUFF BELOW HERE 
+// GAME SOCKET STUFF BELOW HERE
 // (eventually move to another file)
 
-//object to store locations of players
+//object to store locations of players and coins
 var userLoc = {};
+var coinLoc = [];
 
 var io = require('socket.io')(server);
 io.on('connection', function (socket) {
 	console.log("----SOCKET CREATED----");
 	// QUERY DATABASE FOR BUILDINGS AND OBJECTS
 	socket.emit('join', "You have successfully joined");
-	
+
 	socket.on('updatePlayerLoc', function(data) {
 		// Save player info in DB or maintain local list?
 		// Data recieved is in format {username : <username> loc: {x: <int x>, y: <int y>} color: <red>
@@ -109,14 +127,25 @@ io.on('connection', function (socket) {
 		userLoc[data.username]["y"] = data.loc.y;
 		userLoc[data.username]["color"] = data.color;
 		console.log(JSON.stringify(userLoc));
-		
+
 		socket.emit('playerLocUpdate', JSON.stringify(userLoc));
+		socket.emit('coinLocUpdate', (coinLoc));
 	})
-	
+
 	//remove player form userLoc when he logs out
 	socket.on('logout', function(data){
 		delete userLoc[data];
 		console.log("User " + data + " has been logged out");
 	})
+
+	socket.on('coinCollect', function(data){
+		//Make changed to coinLoc
+
+		socket.emit('coinLocUpdate', (coinLoc));
+	})
 })
 
+
+function randLoc(){
+	conn.query("SELECT ")
+}

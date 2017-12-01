@@ -10,6 +10,7 @@ var windowWidth = 500;
 var windowHeight = 400;
 
 function startGame() {
+    loadUsername();
     socket = io.connect('http://localhost:8081');
     socket.on('join', function (data) {
         console.log("server confirm joined");
@@ -19,7 +20,8 @@ function startGame() {
     socket.on('playerLocUpdate', function(data){
         updatePlayers(JSON.parse(data));
     });
-    
+
+
     myUserName = parseCookieData("userName=");
     myColor = parseCookieData("color=");
     myPlayer = new player(20, 20, myColor, 1215, 1455);
@@ -93,7 +95,7 @@ function player(width, height, color, x, y) {
         }
         return false;
     }
-    
+
     this.sendLocation = function() {
         //added temp username
         socket.emit('updatePlayerLoc', {username: myUserName, loc: {x: this.x, y: this.y}, color: myColor });
@@ -185,7 +187,7 @@ function logout() {
             console.log("log out error");
             // alert("you can never leave");
         }
-    }   
+    }
 }
 
 // adapted from https://www.w3schools.com/js/js_cookies.asp
@@ -261,4 +263,11 @@ function scaleY(y) {
     return y - (windowHeight / 2);
 }
 
-startGame();
+function loadUsername() {
+    username = parseCookieData("userName=");
+    document.getElementById("userName").textContent = "Welcome " + username + "!";
+}
+
+function navigateToMenu() {
+    window.location = "/menu.html";
+}

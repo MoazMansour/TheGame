@@ -2,20 +2,27 @@
 <html>
     <head>
         <title>UR Game</title>
-        <link rel="stylesheet" href="account_style.css">
+        <link rel="stylesheet" href="menu_style.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
         <script src="account.js" type="text/javascript"></script>
     </head>
     <body onload="loadAccountInfo()">
+      <div class="topnav" id="myTopnav">
+              <div class="global_header">
+                      <div class="user" id="userName"></div>
+                      <div class="clear"></div>
+                  </div>
+
+      </div>
         <div class="global_header">
             <div class="user" id="userName"></div>
             <div class="clear"></div>
         </div>
-        <h1 class="account_header">Account Information</h1>
+        <h1 class="menu_header">Account Information</h1>
         <div class="button_contianer">
             <div class="account_info" id="accountName"></div>
-            <div class="account_info">Color: <input type="color" id="colorPicker" value="#ff0000"> 
-                <button class="menu_button" onclick="updateColor()">Apply</button> 
+            <div class="account_info"><b>Color:</b> <input type="color" id="colorPicker" value="#ff0000">
+                <button class="menu_button" onclick="updateColor()">Apply</button>
                 </div>
             <button class="menu_button" onclick="navigateToMenu()">Main Menu</button>
         </div>
