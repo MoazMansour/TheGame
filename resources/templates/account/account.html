@@ -8,23 +8,19 @@
     </head>
     <body onload="loadAccountInfo()">
       <div class="topnav" id="myTopnav">
-              <div class="global_header">
-                      <div class="user" id="userName"></div>
-                      <div class="clear"></div>
-                  </div>
-
-      </div>
         <div class="global_header">
-            <div class="user" id="userName"></div>
-            <div class="clear"></div>
+          <div class="user" id="userName"></div>
+          <div class="clear"></div>
         </div>
-        <h1 class="menu_header">Account Information</h1>
-        <div class="button_contianer">
-            <div class="account_info" id="accountName"></div>
-            <div class="account_info"><b>Color:</b> <input type="color" id="colorPicker" value="#ff0000">
-                <button class="menu_button" onclick="updateColor()">Apply</button>
-                </div>
-            <button class="menu_button" onclick="navigateToMenu()">Main Menu</button>
-        </div>
+      </div>
+      <h1 class="menu_header">Account Information</h1>
+      <div class="center">
+        <div class="account_info" id="accountName"></div>
+        <div class="account_info"><b>Color:</b> <input type="color" id="colorPicker" value="#ff0000"></div>
+      </div>
+      <div class="button_contianer">
+        <button class="menu_button" onclick="updateColor()">Apply</button>
+        <button class="menu_button" onclick="navigateToMenu()">Main Menu</button>
+      </div>
     </body>
 </html>

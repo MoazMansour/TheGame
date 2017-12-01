@@ -1,12 +1,25 @@
-/* .global_header {
-    height: 40px;
-} */
+ .global_header {
+    height: 50px;
+}
 
-/* .user {
-    float: left;
+ #userName {
+    float: center;
     margin-right: 40px;
     font-size: 30px;
-} */
+}
+
+* {
+  box-sizing: border-box;
+}
+
+
+html {
+  background-image: url("mapbk.jpg");
+  background-position: center center fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 
 .body {
     border: 0px ;
@@ -33,6 +46,7 @@
 
 .menu_button:hover {
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+    cursor: pointer;
     /* background-color: #4CAF50;
     color: white; */
 }
@@ -64,4 +78,9 @@
     padding: 14px 16px;
     text-decoration: none;
     font-size: 17px;
+}
+.account_info {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
 }
