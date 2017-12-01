@@ -106,11 +106,6 @@ var map = {
             keys[e.keyCode] = false;
         })
         //load background
-        this.background.onload = function () {
-            this.context.fillStyle = "white";
-            this.context.strokeStyle = "red";
-            this.context.lineWidth = 7;
-        }
         this.background.src = "map.jpg";
     },
     clear : function() {
@@ -132,6 +127,7 @@ function player(width, height, color, x, y) {
     this.height = height;
     this.x = x;
     this.y = y;
+    this.color = color;
     this.speed = 1; /* change back to 1 after testing */
     this.move = function() {
         // console.log(this.x + ", " + this.y);
@@ -229,6 +225,7 @@ function opponent(username, color, x, y, width, height) {
     this.height = height;
     this.x = x;
     this.y = y;
+    this.color = color;
     this.update = function(x, y) {
         ctx = map.context;
         ctx.fillStyle = color;
@@ -244,7 +241,7 @@ function updatePlayers(data){
         // console.log("adding " + key);
         // console.log(data);
         // console.log(data[key]);
-        newOpponents.push(new opponent(key, "blue", data[key].x, data[key].y, 20, 20));
+        newOpponents.push(new opponent(key, data[key].color, data[key].x, data[key].y, 20, 20));
     }
     opponents = newOpponents;
 }
