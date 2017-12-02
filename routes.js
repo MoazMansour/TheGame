@@ -99,9 +99,21 @@ exports.signupPost = function(request, response) {
 				});
 		}
 	});
-
-
 }
+// ##################################
+// Delete User functions
+exports.deleteUserPost = function(request, response) {
+	conn.query("DELETE FROM users WHERE username = ?;", [request.body.username], function(err) {
+		console.log(request.body);
+			if(err) {
+				return console.log(err);
+			}
+			else {
+				response.send({ redirect: '/' });
+				}
+			})
+		}
+// ##################################
 
 function saveLogin (sid, username){
 	conn.query("UPDATE users SET sessionID = ? WHERE username = ?",[sid, username], function(err){

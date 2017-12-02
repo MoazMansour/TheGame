@@ -46,3 +46,27 @@ function parseCookieData(key) {
     }
     return "unknown";
 }
+
+function deleteUser(){
+  username = parseCookieData("userName=");
+  if (window.confirm("By pressing OK all your game data will be lost forever. Are you sure you want to proceed?") == true) {
+    var xhr = new XMLHttpRequest();
+    var url = "deleteUser";
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-type", "application/json");
+    var data = JSON.stringify({ "username": username });
+    xhr.send(data);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        console.log("User Deleted.");
+        alert("User deleted successfully!");
+        window.location = JSON.parse(xhr.response).redirect
+      }
+      else if (xhr.readyState === 4 && xhr.status === 404)
+        alert("Error Happened please try again");
+    }
+  } else {
+    txt = "You pressed Cancel!";
+  }
+  document.getElementById("demo").innerHTML = txt;
+}

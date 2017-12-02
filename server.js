@@ -101,6 +101,7 @@ app.post('/logout', routes.logout)
 app.post('/getSalt',routes.getSalt)
 app.post('/login', routes.loginPost)
 app.post('/signUp', routes.signupPost)
+app.post('/deleteUser', routes.deleteUserPost)
 app.post('/updateColor', routes.updateColor)
 
 
