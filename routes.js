@@ -118,22 +118,6 @@ exports.deleteUserPost = function(request, response) {
 			})
 		}
 // ##################################
-// ##################################
-// Display Scores in Menu
-exports.displayScores = function(request, response) {
-	conn.query("SELECT * FROM users;", [request.body.username], function(err,rows,fields) {
-		console.log(request.body);
-			if(err) {
-				return console.log(err);
-			}
-			else {
-				console.log(rows);
-				response.type= 'JSON';
-				response.send({ hello: 'world' });
-				}
-			})
-		}
-// ##################################
 
 function saveLogin (sid, username){
 	conn.query("UPDATE users SET sessionID = ? WHERE username = ?",[sid, username], function(err){

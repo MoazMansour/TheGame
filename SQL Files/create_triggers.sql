@@ -13,7 +13,6 @@ DROP PROCEDURE IF EXISTS reset_score;
 DROP PROCEDURE IF EXISTS delete_game;
 DROP PROCEDURE IF EXISTS start_game;
 DROP PROCEDURE IF EXISTS end_game;
-DROP PROCEDURE IF EXISTS send_menu;
 
 
 DELIMITER //
@@ -154,12 +153,6 @@ BEGIN
 	SET @score = (SELECT hits FROM interacts WHERE user_id= @id AND game_id = @game AND object_id = @object);
 	UPDATE games SET endtime = NULL WHERE game_id = @game;
 	UPDATE plays SET game_score = @score WHERE user_id = @id AND game_id = @game;
-END;
-# ---------------------------
-CREATE PROCEDURE send_menu(IN u_name VARCHAR(20))
-BEGIN
-	SET @id = (SELECT user_id FROM users WHERE username = u_name);
-	SELECT * FROM plays WHERE user_id = @id;
 END;
 # ---------------------------------------------------------------------------------------
 //
