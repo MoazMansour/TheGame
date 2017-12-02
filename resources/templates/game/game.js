@@ -111,7 +111,7 @@ var map = {
         node.appendChild(this.canvas);
         //document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.localInterval = setInterval(updateGameLocal, 20);
-        this.remoteInterval = setInterval(updateGameRemote, 50);
+        this.remoteInterval = setInterval(updateGameRemote, 1000);
         window.addEventListener('keydown', function (e) {
             keys[e.keyCode] = true;
         })
