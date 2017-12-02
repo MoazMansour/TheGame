@@ -108,7 +108,6 @@ app.post('/deleteUser', routes.deleteUserPost)
 
 
 // GAME SOCKET STUFF BELOW HERE
-// (eventually move to another file)
 
 //object to store locations of players and coins
 var userLoc = {};
