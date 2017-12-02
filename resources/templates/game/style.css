@@ -9,12 +9,6 @@ html {
   background-size: cover;
 }
 
-canvas {
-  border: 1px solid grey;
-  width: 50%;
-  height: 80%;
-}
-
 .global_header {
     height: 50px;
 }
@@ -53,12 +47,21 @@ button:hover {
 }
 
 .user {
-    float: center;
+    float: left;
     color: #f2f2f2;
     text-align: center;
     padding: 10px 16px;
     text-decoration: none;
     font-size: 32px;
+}
+
+.score {
+  float: right;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 10px 16px;
+  text-decoration: none;
+  font-size: 32px;
 }
 
 .center {
