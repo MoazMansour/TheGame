@@ -11,14 +11,14 @@ html {
 
 .global_header {
     height: 50px;
-}
+    min-height: 50px;
+    }
 
 .clear {
     clear: both;
 }
 
 button {
-    margin: 2% 35%;
     width: 40%;
     clear: both;
     border-radius: 8px;
@@ -78,5 +78,5 @@ button:hover {
 
 #gamecanvas {
   width: 100%;
-  height: 80%;
+  height: 70%;
 }
