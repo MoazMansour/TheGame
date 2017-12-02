@@ -109,14 +109,15 @@ app.post('/updateColor', routes.updateColor)
 
 //object to store locations of players and coins
 var userLoc = {};
-var coinLoc = [];
+var coinLoc = [{"x": 10, "y": 20}, {"x": 1251, "y": 1569}, {"x": 1210, "y": 1364}];
 
 var io = require('socket.io')(server);
 io.on('connection', function (socket) {
+	var client = socket.id;
 	console.log("----SOCKET CREATED----");
 	// QUERY DATABASE FOR BUILDINGS AND OBJECTS
 	socket.emit('join', "You have successfully joined");
-
+	console.log("ID :" + client);
 	socket.on('updatePlayerLoc', function(data) {
 		// Save player info in DB or maintain local list?
 		// Data recieved is in format {username : <username> loc: {x: <int x>, y: <int y>} color: <red>
@@ -129,7 +130,7 @@ io.on('connection', function (socket) {
 		console.log(JSON.stringify(userLoc));
 
 		socket.emit('playerLocUpdate', JSON.stringify(userLoc));
-		socket.emit('coinLocUpdate', (coinLoc));
+		
 	})
 
 	//remove player form userLoc when he logs out
@@ -138,14 +139,55 @@ io.on('connection', function (socket) {
 		console.log("User " + data + " has been logged out");
 	})
 
-	socket.on('coinCollect', function(data){
+	//removes coin from coin array 
+	socket.on('collectCoin', function(data){
 		//Make changed to coinLoc
+		if (coinLoc[data] == null) {
+			io.to(client).emit('scoreUpdate', 0);
+		} else {
+			coinLoc[data] = null;
+			io.to(client).emit('scoreUpdate', 1);
+		}
+		console.log(data);
+		console.log(coinLoc);
+		socket.broadcast.emit('removeCoin', data);
+		if(activeCoins() <= 20){
+			coinReset();
+			socket.emit('coinData', coinLoc);
+		}
+	})
 
-		socket.emit('coinLocUpdate', (coinLoc));
+	//sends coin array to user 
+	socket.on('getCoins', function(data){
+		console.log("sending coin array");
+		socket.emit('coinData', coinLoc);
 	})
 })
+coinReset();
+//Helper functions 
+function coinReset(){
+	conn.query("SELECT location FROM summons WHERE state_id = 1 ORDER BY RAND() LIMIT 50 ", function(err, row){
+		if(err)
+			console.log(err);
+		else{
+			coinLoc= [];
+			row.forEach(element => {
+				var x = parseInt(element["location"].substring(0,4));
+				var y = parseInt(element["location"].substring(5,9));
+				var obj = { "x": x, "y": y };
+				coinLoc.push(obj);
+			});
+			console.log(coinLoc);
+		}
+	});
 
+}
 
-function randLoc(){
-	conn.query("SELECT ")
+function activeCoins(){
+	var count = 0;
+	coinLoc.forEach(element => {
+		if(element == null)
+			count++;
+	});
+	return count;
 }
