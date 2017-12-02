@@ -29,7 +29,7 @@ function startGame() {
         updateCoins(data);
     });
     socket.on('highScore', function(data) {
-        highScore = data;
+        highScore = parseInt(data);
         document.getElementById("curScore").textContent = "Score: "+ score + " | High Score: "+highScore;
     });
     socket.on('scoreUpdate', function(data) {
