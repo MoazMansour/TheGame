@@ -9,6 +9,7 @@ var myColor;
 var windowWidth = 500;
 var windowHeight = 400;
 var score = 0;
+var highScore = 0;
 
 // /* -------------- SYSTEM FUNCTIONALITY -------------- */
 function startGame() {
@@ -18,6 +19,8 @@ function startGame() {
         // retrieve data about buildings
         // retrieve coin information
         socket.emit('getCoins', true);
+        // retrieve previous high score
+        socket.emit('getHighScore', myUserName);
     });
     socket.on('playerLocUpdate', function(data){
         updatePlayers(JSON.parse(data));
@@ -32,6 +35,9 @@ function startGame() {
     socket.on('removeCoin', function(data) {
         coins[data] = null;
         console.log("remove: " + data);
+    })
+    socket.on('highScore', function(data) {
+        highScore = data;
     })
 
     myUserName = parseCookieData("userName=");
