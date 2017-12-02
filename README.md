@@ -36,7 +36,7 @@ $ goto localhost:8081
 ```
 ### Default Account
 
-Username: strangers 
-Password: password  
-
+<b>Username:</b> strangers <br/>
+<b>Password:</b> password  <br/>
+  
 You are ready to go!
