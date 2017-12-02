@@ -13,7 +13,7 @@ var highScore = 0;
 
 // /* -------------- SYSTEM FUNCTIONALITY -------------- */
 function startGame() {
-    loadUsername();
+    
     socket = io.connect('http://localhost:8081');
     socket.on('join', function (data) {
         // retrieve data about buildings
@@ -28,6 +28,10 @@ function startGame() {
     socket.on('coinData', function(data) {
         updateCoins(data);
     });
+    socket.on('highScore', function(data) {
+        highScore = data;
+        document.getElementById("curScore").textContent = "Score: "+ score + " | High Score: "+highScore;
+    });
     socket.on('scoreUpdate', function(data) {
         score += data;
         document.getElementById("curScore").textContent = "Score: "+ score + " | High Score: "+highScore;
@@ -36,10 +40,8 @@ function startGame() {
     socket.on('removeCoin', function(data) {
         coins[data] = null;
         console.log("remove: " + data);
-    })
-    socket.on('highScore', function(data) {
-        highScore = data;
-    })
+    });
+    loadUsername();
 
     myUserName = parseCookieData("userName=");
     myColor = parseCookieData("color=");
@@ -67,7 +69,7 @@ function parseCookieData(key) {
 function loadUsername() {
     username = parseCookieData("userName=");
     document.getElementById("userName").textContent = "Username: " + username;
-    document.getElementById("curScore").textContent = "Score: "+ score + " | High Score: "+highScore;
+    //document.getElementById("curScore").textContent = "Score: "+ score + " | High Score: "+highScore;
 }
 
 function navigateToMenu() {

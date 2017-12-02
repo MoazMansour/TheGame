@@ -70,6 +70,8 @@ var server = app.listen(8081, function(){
 	console.log("Server running at http://%s:%s",host,port);
 })
 
+//initial coin locations
+coinReset();
 //basic routes
 app.get('/', routes.home)
 app.get('/images/user.png', routes.usrimg)
@@ -182,9 +184,21 @@ io.on('connection', function (socket) {
 			}
 		});
 	})
+
+	socket.on('getHighScore', function(data){
+		conn.query("SELECT global_score FROM users WHERE username = ?", [data], function(err, row){
+			if(err)
+				console.log(err);
+			else{
+				var score = row[0].global_score;
+				if(score == null)
+					score = 0;
+				io.to(client).emit('highScore', score);
+			}
+		});
+	})
 	
 })
-coinReset();
 //Helper functions 
 function coinReset(){
 	conn.query("SELECT location FROM summons WHERE state_id = 1 ORDER BY RAND() LIMIT 50 ", function(err, row){
