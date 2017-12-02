@@ -236,6 +236,10 @@ exports.gameBackground = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/game/map.jpg');
 }
 
+exports.playerIcon = function(request, response) {
+	response.sendFile(__dirname + '/resources/templates/game/playerIcon.png');
+}
+
 exports.gamejs = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/game/game.js');
 }

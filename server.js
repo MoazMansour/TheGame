@@ -96,6 +96,7 @@ app.get('/game.js', routes.gamejs)
 app.get('/game_style.css', routes.gameStyle)
 app.get('/style.css', routes.style)
 app.get('/map.jpg', routes.gameBackground)
+app.get('/playerIcon.png', routes.playerIcon);
 app.get('/mapbk.jpg', routes.mapbk)
 app.post('/logout', routes.logout)
 app.post('/getSalt',routes.getSalt)
