@@ -34,9 +34,9 @@ $ npm install
 $ <node or nodejs> server.js   
 $ goto localhost:8081
 ```
+## Default Account
 
-### Default Username & Password
-username: strangers
-passowrd: password
+Username: strangers
+Password: password  
 
 You are ready to go!
