@@ -174,20 +174,22 @@ io.on('connection', function (socket) {
 	})
 
 	socket.on('getHighScore', function(data){
-		conn.query("SELECT global_score FROM users WHERE username = ?", [data], function(err, row){
-			if(err)
-				console.log(err);
-			else{
-				var score = row[0].global_score;
-				if(score == null)
-					score = 0;
-				io.to(client).emit('highScore', score);
-			}
-		});
+		if(data != "unknown"){
+			conn.query("SELECT global_score FROM users WHERE username = ?", [data], function(err, row){
+				if(err)
+					console.log(err);
+				else{
+					var score = row[0].global_score;
+					if(score == null)
+						score = 0;
+					io.to(client).emit('highScore', score);
+				}
+			});
+		}
 	})
 	
 })
-
+//
 //Helper functions 
 function coinReset(){
 	conn.query("SELECT location FROM summons WHERE state_id = 1 ORDER BY RAND() LIMIT 50 ", function(err, row){
