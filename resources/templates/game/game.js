@@ -207,12 +207,12 @@ function coin(index, x, y) {
     this.index = index;
     this.x = x;
     this.y = y;
-    this.size = 12;
+    this.size = 6;
     // draw coin on map
     this.update = function(x, y) {
         ctx = map.context;
         ctx.beginPath();
-        ctx.arc(this.x - x, this.y - y, 3, 0, 2 * Math.PI, false);
+        ctx.arc(this.x - x, this.y - y, this.size / 2, 0, 2 * Math.PI, false);
         ctx.fillStyle = 'yellow';
         ctx.fill();
         ctx.lineWidth = 1;
