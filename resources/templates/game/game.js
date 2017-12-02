@@ -30,6 +30,7 @@ function startGame() {
     });
     socket.on('scoreUpdate', function(data) {
         score += data;
+        document.getElementById("curScore").textContent = "Score: "+ score + " | High Score: "+highScore;
         console.log(score);
     });
     socket.on('removeCoin', function(data) {
@@ -65,7 +66,8 @@ function parseCookieData(key) {
 
 function loadUsername() {
     username = parseCookieData("userName=");
-    document.getElementById("userName").textContent = "Welcome " + username + "!";
+    document.getElementById("userName").textContent = username;
+    document.getElementById("curScore").textContent = "Score: "+ score + " | High Score: "+highScore;
 }
 
 function navigateToMenu() {
