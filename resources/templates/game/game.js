@@ -299,7 +299,7 @@ function updateGameRemote() {
 
 // send server score
 function sendScore() {
-    socket.emit('logout', { 'username' : myUserName, 'score' : score });
+    socket.emit('saveScore', { 'username' : myUserName, 'score' : score });
 }
 
 function scaleX(x) {

@@ -45,7 +45,7 @@ exports.getSalt = function(request, response) {
 			console.log("ERROR!!");
 		 	return console.log(err);
 		}
-		if(row != null ){
+		if(row.length != 0 ){
 			console.log("salt here : "+ row[0].salt);
 			response.send({salt: row[0].salt});
 		}

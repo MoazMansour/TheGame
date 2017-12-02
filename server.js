@@ -101,7 +101,6 @@ app.post('/logout', routes.logout)
 app.post('/getSalt',routes.getSalt)
 app.post('/login', routes.loginPost)
 app.post('/signUp', routes.signupPost)
-app.post('/deleteUser', routes.deleteUserPost)
 app.post('/updateColor', routes.updateColor)
 
 
@@ -131,7 +130,7 @@ io.on('connection', function (socket) {
 		// console.log(JSON.stringify(userLoc));
 
 		socket.emit('playerLocUpdate', JSON.stringify(userLoc));
-
+		
 	})
 
 	//remove player form userLoc when he logs out
@@ -140,7 +139,7 @@ io.on('connection', function (socket) {
 		console.log("User " + data + " has been logged out");
 	})
 
-	//removes coin from coin array
+	//removes coin from coin array 
 	socket.on('collectCoin', function(data){
 		//Make changed to coinLoc
 		if (coinLoc[data] == null) {
@@ -149,24 +148,44 @@ io.on('connection', function (socket) {
 			coinLoc[data] = null;
 			io.to(client).emit('scoreUpdate', 1);
 		}
-		console.log(data);
+		console.log("Index collected: "+data);
 		// console.log(coinLoc);
 		socket.broadcast.emit('removeCoin', data);
-		console.log(activeCoins());
+		console.log("Active Coins: "+activeCoins());
 		if(activeCoins() <= 20){
 			coinReset();
 			socket.emit('coinData', coinLoc);
 		}
 	})
 
-	//sends coin array to user
+	//sends coin array to user 
 	socket.on('getCoins', function(data){
 		console.log("sending coin array");
 		socket.emit('coinData', coinLoc);
 	})
+
+	//score check before logout
+	socket.on('saveScore', function(data){
+		conn.query("SELECT global_score FROM users WHERE username = ? ;", [data.username], function(err, row){
+			if(err)
+				console.log(err);
+			else{
+				if(row[0].global_score < data.score){
+					conn.query("UPDATE users SET global_score = ? WHERE username = ? ;", [data.score, data.username], function(err){
+						if(err){
+							console.log(err);
+						}
+						else
+							console.log("Score updated");
+					});
+				}
+			}
+		});
+	})
+	
 })
 coinReset();
-//Helper functions
+//Helper functions 
 function coinReset(){
 	conn.query("SELECT location FROM summons WHERE state_id = 1 ORDER BY RAND() LIMIT 50 ", function(err, row){
 		if(err)
