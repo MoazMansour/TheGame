@@ -30,6 +30,8 @@ exports.logout = function(request,response){
 		}
 		else{
 			console.log("User Logged out");
+			response.cookie('userName','NULL',{ maxAge: 0});
+			response.cookie('color','NULL',{ maxAge: 0});
 			response.sendStatus(200);
 		}
 
@@ -89,7 +91,7 @@ exports.signupPost = function(request, response) {
 						return console.log(err);
 					else
 						saveLogin(request.session.id, request.body.username);
-						response.cookie('username', request.body.username, { maxAge: 900000, httpOnly: false });
+						response.cookie('userName', request.body.username, { maxAge: 900000, httpOnly: false });
 						response.cookie('color', request.body.color, {maxAge: 900000, httpOnly: false, encode: String});
 						response.send({ redirect: '/' });
 						console.log("USER ADDED");
@@ -109,7 +111,9 @@ exports.deleteUserPost = function(request, response) {
 				return console.log(err);
 			}
 			else {
-				response.send({ redirect: '/' });
+				response.cookie('userName','NULL',{ maxAge: 0});
+				response.cookie('color','NULL',{ maxAge: 0});
+				response.send({ redirect: '/login.html' });
 				}
 			})
 		}
