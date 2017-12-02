@@ -1,6 +1,5 @@
 var keys = [];
 var buildings = [];
-var objects = [];
 var coins = [];
 var opponents = [];
 var myPlayer;
