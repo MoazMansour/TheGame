@@ -101,6 +101,7 @@ var map = {
     width : windowWidth,
     height : windowHeight,
     background : new Image(),
+    icon : new Image(),
     context : undefined,
     start : function() {
         this.canvas.width = this.width;
@@ -120,6 +121,7 @@ var map = {
         })
         //load background
         this.background.src = "map.jpg";
+        this.icon.src = "playerIcon.png";
     },
     clear : function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -131,6 +133,7 @@ var map = {
         this.context.stroke();
         this.context.fillStyle = color;
         this.context.fillRect((this.width / 2), (this.height / 2), 20, 20);
+        this.context.drawImage(this.icon, (this.width / 2) + 5, (this.height / 2) + 5, 10, 10);
     }
 }
 
