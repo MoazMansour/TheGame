@@ -23,6 +23,7 @@ $ mysql -u root -p
 // You will be promoted to enter a password, this is the password you created to use the MySQL server on you local machine
 $ source create_tables.sql
 $ source create_triggers.sql
+$ source insert_objects.sql
 ```
 
 ### Starting the server
@@ -33,5 +34,9 @@ $ npm install
 $ <node or nodejs> server.js   
 $ goto localhost:8081
 ```
+
+### Default Username & Password
+username: strangers
+passowrd: password
 
 You are ready to go!
