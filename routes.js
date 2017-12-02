@@ -116,6 +116,16 @@ exports.deleteUserPost = function(request, response) {
 			})
 		}
 // ##################################
+// Delete User functions
+exports.ResetScorePost = function(request, response) {
+	conn.query("Call reset_score(?);", [request.body.username], function(err) {
+		console.log(request.body);
+			if(err) {
+				return console.log(err);
+			}
+			})
+		}
+// ##################################
 
 function saveLogin (sid, username){
 	conn.query("UPDATE users SET sessionID = ? WHERE username = ?",[sid, username], function(err){
