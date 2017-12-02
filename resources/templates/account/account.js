@@ -65,8 +65,5 @@ function deleteUser(){
       else if (xhr.readyState === 4 && xhr.status === 404)
         alert("Error Happened please try again");
     }
-  } else {
-    txt = "You pressed Cancel!";
   }
-  document.getElementById("demo").innerHTML = txt;
 }
