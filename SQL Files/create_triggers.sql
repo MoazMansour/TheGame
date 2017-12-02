@@ -7,7 +7,13 @@ DROP TRIGGER IF EXISTS games_update;
 DROP TRIGGER IF EXISTS before_objects_insert;
 DROP TRIGGER IF EXISTS before_states_insert;
 DROP TRIGGER IF EXISTS before_plays_insert;
+DROP TRIGGER IF EXISTS plays_update;
 DROP TRIGGER IF EXISTS before_interacts_insert;
+DROP PROCEDURE IF EXISTS reset_score;
+DROP PROCEDURE IF EXISTS delete_game;
+DROP PROCEDURE IF EXISTS start_game;
+DROP PROCEDURE IF EXISTS end_game;
+
 
 DELIMITER //
 
@@ -55,11 +61,11 @@ BEGIN
   SET NEW.endtime = NULL;
 END;
 # ---------------------------
-CREATE TRIGGER after_games_insert AFTER INSERT ON games
-FOR EACH ROW
-BEGIN
-  INSERT INTO plays(user_id,game_id) values(5,NEW.game_id);
-END;
+-- CREATE TRIGGER after_games_insert AFTER INSERT ON games
+-- FOR EACH ROW
+-- BEGIN
+--   INSERT INTO plays(user_id,game_id) values(5,NEW.game_id);
+-- END;
 # ---------------------------
 CREATE TRIGGER games_update BEFORE UPDATE ON games
 FOR EACH ROW
@@ -96,30 +102,58 @@ FOR EACH ROW
 BEGIN
   SET NEW.game_score = 0;
 END;
-# --------------------------------------------------------------------------------------------------
-# ----Interacts relation Triggers
-CREATE TRIGGER before_interacts_insert BEFORE INSERT ON interacts
+# ---------------------------
+CREATE TRIGGER plays_update AFTER UPDATE ON plays
 FOR EACH ROW
 BEGIN
-  SET NEW.hits = 0;
+	SET @score = NEW.game_score;
+	SET @id = OLD.user_id;
+	UPDATE users SET global_score = global_score + @score WHERE user_id = @id;
 END;
 # --------------------------------------------------------------------------------------------------
--- # ----------------------------------
--- CREATE PROCEDURE change_percentage(IN a_id INT, IN n_units INT, IN p_id int)
+# ----Interacts relation Triggers
+-- CREATE TRIGGER before_interacts_insert BEFORE INSERT ON interacts
+-- FOR EACH ROW
 -- BEGIN
--- 	SET @price = (SELECT price FROM Asset WHERE asset_id = a_id);
--- 	SET @tran_value = n_units * @price;
--- 	SET @current_value = (SELECT value FROM Portfolio WHERE Portfolio.id = p_id);
--- 	SET @new_value = @current_value + @tran_value;
--- 	UPDATE Portfolio SET value = @new_value WHERE Portfolio.id = p_id;
--- 	IF @new_value = 0 THEN
--- 		UPDATE Percentage SET percentage = 0 WHERE portfolio_id = p_id;
--- 	ELSE
--- 		UPDATE Percentage SET percentage = (Percentage.units / @new_value) * (SELECT price FROM Asset WHERE Asset.asset_id = Percentage.asset_id)
--- 		WHERE portfolio_id = p_id;
--- 	END IF;
+--   SET NEW.hits = 0;
 -- END;
+# --------------------------------------------------------------------------------------------------
+# ----Procedures
+CREATE PROCEDURE reset_score(IN u_name VARCHAR(20))
+BEGIN
+	SET @id = (SELECT user_id FROM users WHERE username = u_name);
+	DELETE FROM games WHERE game_id in (SELECT game_id FROM plays WHERE user_id = @id);
+	DELETE FROM plays WHERE user_id = @id;
+	DELETE FROM interacts WHERE user_id = @id;
+	UPDATE users SET global_score = 0 WHERE user_id = @id;
+END;
 -- 		CALL change_percentage(NEW.asset_id,NEW.units,NEW.portfolio_id);
+# ---------------------------
+CREATE PROCEDURE delete_game(IN g_id INT)
+BEGIN
+	SET @u_id = (SELECT user_id FROM plays WHERE game_id = g_id);
+	DELETE FROM games WHERE game_id = g_id;
+	SET @score = (SELECT SUM(game_score) FROM plays WHERE user_id = @u_id);
+	UPDATE users SET global_score = @score WHERE user_id = @u_id;
+END;
+# ---------------------------
+CREATE PROCEDURE start_game(IN u_name VARCHAR(20))
+BEGIN
+	INSERT INTO games(game_id) VALUES(1);
+	SET @id = (SELECT user_id FROM users WHERE username = u_name);
+	SET @game = (SELECT MAX(game_id) FROM games);
+	INSERT INTO plays VALUES(@id,@game,1);
+END;
+# ---------------------------
+CREATE PROCEDURE end_game(IN u_name VARCHAR(20))
+BEGIN
+	SET @id = (SELECT user_id FROM users WHERE username = u_name);
+	SET @game = (SELECT MAX(game_id) FROM plays WHERE user_id = @id);
+	SET @object = (SELECT object_id FROM objects WHERE object_name = 'coin');
+	SET @score = (SELECT hits FROM interacts WHERE user_id= @id AND game_id = @game AND object_id = @object);
+	UPDATE games SET endtime = NULL WHERE game_id = @game;
+	UPDATE plays SET game_score = @score WHERE user_id = @id AND game_id = @game;
+END;
 # ---------------------------------------------------------------------------------------
 //
 DELIMITER ;
