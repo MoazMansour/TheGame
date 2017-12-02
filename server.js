@@ -104,6 +104,7 @@ app.post('/login', routes.loginPost)
 app.post('/signUp', routes.signupPost)
 app.post('/updateColor', routes.updateColor)
 app.post('/deleteUser', routes.deleteUserPost)
+app.post('/ResetScore', routes.ResetScorePost)
 
 
 // GAME SOCKET STUFF BELOW HERE
@@ -124,7 +125,7 @@ io.on('connection', function (socket) {
 		userLoc[data.username]["x"] = data.loc.x;
 		userLoc[data.username]["y"] = data.loc.y;
 		userLoc[data.username]["color"] = data.color;
-		socket.emit('playerLocUpdate', JSON.stringify(userLoc));		
+		socket.emit('playerLocUpdate', JSON.stringify(userLoc));
 	})
 
 	//remove player form userLoc when he logs out
@@ -133,7 +134,7 @@ io.on('connection', function (socket) {
 		console.log("User " + data + " has been logged out");
 	})
 
-	//removes coin from coin array 
+	//removes coin from coin array
 	socket.on('collectCoin', function(data){
 		if (coinLoc[data] == null) {
 			io.to(client).emit('scoreUpdate', 0);
@@ -150,7 +151,7 @@ io.on('connection', function (socket) {
 		}
 	})
 
-	//sends coin array to user 
+	//sends coin array to user
 	socket.on('getCoins', function(data){
 		socket.emit('coinData', coinLoc);
 	})
@@ -188,10 +189,10 @@ io.on('connection', function (socket) {
 			});
 		}
 	})
-	
+
 })
 //
-//Helper functions 
+//Helper functions
 function coinReset(){
 	conn.query("SELECT location FROM summons WHERE state_id = 1 ORDER BY RAND() LIMIT 50 ", function(err, row){
 		if(err)
