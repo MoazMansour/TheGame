@@ -10,9 +10,8 @@ html {
 }
 
 .global_header {
-    height: 50px;
-    min-height: 50px;
-    }
+    height: 40px;    
+}
 
 .clear {
     clear: both;
@@ -47,21 +46,23 @@ button:hover {
 }
 
 .user {
+    font-family: "Georgia", Times, serif;
     float: left;
     color: #f2f2f2;
     text-align: center;
     padding: 10px 16px;
     text-decoration: none;
-    font-size: 32px;
+    font-size: 3vw;
 }
 
 .score {
+  font-family: "Georgia", Times, serif;
   float: right;
   color: #f2f2f2;
   text-align: center;
   padding: 10px 16px;
   text-decoration: none;
-  font-size: 32px;
+  font-size: 3vw;
 }
 
 .center {
