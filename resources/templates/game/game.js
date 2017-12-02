@@ -63,10 +63,12 @@ function loadUsername() {
 }
 
 function navigateToMenu() {
+    sendScore();
     window.location = "/menu.html";
 }
 
 function logout() {
+    sendScore();
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "logout", true);
     xhr.send();
@@ -287,6 +289,11 @@ function updateGameLocal() {
 // update server with location
 function updateGameRemote() {
     myPlayer.sendLocation();
+}
+
+// send server score
+function sendScore() {
+    socket.emit('logout', { 'username' : myUserName, 'score' : score });
 }
 
 function scaleX(x) {
