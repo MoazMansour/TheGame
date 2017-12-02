@@ -1,6 +1,7 @@
 var keys = [];
 var buildings = [];
 var objects = [];
+var coins = [];
 var opponents = [];
 var myPlayer;
 var socket;
@@ -8,19 +9,32 @@ var myUserName;
 var myColor;
 var windowWidth = 500;
 var windowHeight = 400;
+var score = 0;
 
+// /* -------------- SYSTEM FUNCTIONALITY -------------- */
 function startGame() {
     loadUsername();
     socket = io.connect('http://localhost:8081');
     socket.on('join', function (data) {
-        console.log("server confirm joined");
         // retrieve data about buildings
-        // emit my start location? unless set by server
+        // retrieve coin information
+        socket.emit('getCoins', true);
     });
     socket.on('playerLocUpdate', function(data){
         updatePlayers(JSON.parse(data));
     });
-
+    socket.on('coinData', function(data) {
+        console.log(data);
+        updateCoins(data);
+    });
+    socket.on('scoreUpdate', function(data) {
+        score += data;
+        console.log(score);
+    });
+    socket.on('removeCoin', function(data) {
+        coins[data] = null;
+        console.log(coins);
+    })
 
     myUserName = parseCookieData("userName=");
     myColor = parseCookieData("color=");
@@ -29,6 +43,49 @@ function startGame() {
     map.start();
 }
 
+// adapted from https://www.w3schools.com/js/js_cookies.asp
+function parseCookieData(key) {
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(key) == 0) {
+            return c.substring(key.length, c.length);
+        }
+    }
+    return "unknown";
+}
+
+function loadUsername() {
+    username = parseCookieData("userName=");
+    document.getElementById("userName").textContent = "Welcome " + username + "!";
+}
+
+function navigateToMenu() {
+    window.location = "/menu.html";
+}
+
+function logout() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "logout", true);
+    xhr.send();
+    socket.emit('logout', myUserName);
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState === 4 && xhr.status == 200){
+            window.location = "/login.html";
+        }
+        else{
+            console.log("log out error");
+            // alert("you can never leave");
+        }
+    }
+}
+
+/* -------------- GAME OBJECTS -------------- */
+// Map object
 var map = {
     canvas : document.createElement("canvas"),
     width : windowWidth,
@@ -52,11 +109,6 @@ var map = {
             keys[e.keyCode] = false;
         })
         //load background
-        this.background.onload = function () {
-            this.context.fillStyle = "white";
-            this.context.strokeStyle = "red";
-            this.context.lineWidth = 7;
-        }
         this.background.src = "map.jpg";
     },
     clear : function() {
@@ -72,30 +124,44 @@ var map = {
     }
 }
 
+// Player Object
 function player(width, height, color, x, y) {
     this.width = width;
     this.height = height;
     this.x = x;
     this.y = y;
+    this.color = color;
     this.speed = 1; /* change back to 1 after testing */
     this.move = function() {
-        if(keys[83] && !this.collisionCheck(this.x, this.y + 1, this.width, this.height)) this.y += this.speed;
-        if(keys[87] && !this.collisionCheck(this.x, this.y - 1, this.width, this.height)) this.y -= this.speed;
-        if(keys[68] && !this.collisionCheck(this.x + 1, this.y, this.width, this.height)) this.x += this.speed;
-        if(keys[65] && !this.collisionCheck(this.x - 1, this.y, this.width, this.height)) this.x -= this.speed;
+        // console.log(this.x + ", " + this.y);
+        if(keys[83] && !this.collisionCheck(this.x, this.y + this.speed)) this.y += this.speed;
+        if(keys[87] && !this.collisionCheck(this.x, this.y - this.speed)) this.y -= this.speed;
+        if(keys[68] && !this.collisionCheck(this.x + this.speed, this.y)) this.x += this.speed;
+        if(keys[65] && !this.collisionCheck(this.x - this.speed, this.y)) this.x -= this.speed;
+        // Check for collected coins
+        this.coinCheck();
     }
-    this.collisionCheck = function(x, y, t, h) {
+    this.collisionCheck = function(x, y) {
         // TODO: ADJUST UPPER BOUNDS FOR SIZE OF MAP
         if(x < 0 || x > 2180)
             return true;
         if(y < 0 || y > 2180)
             return true;
         for (var i = 0, len = buildings.length; i < len; i++) {
-            if(collision(x, y, t, h, buildings[i])) {
+            if(buildings[i].collision(x, y, this.width, this.height)) {
                 return true;
             }
         }
         return false;
+    }
+
+    this.coinCheck = function () {
+        for (var i = 0, len = coins.length; i < len; i++) {
+            if(coins[i] != null && coins[i].collision(this.x, this.y, this.width, this.height)) {
+                coins[i] = null;
+                socket.emit('collectCoin', i);
+            }
+        }
     }
 
     this.sendLocation = function() {
@@ -103,23 +169,23 @@ function player(width, height, color, x, y) {
         socket.emit('updatePlayerLoc', {username: myUserName, loc: {x: this.x, y: this.y}, color: myColor });
     }
 }
-// add players from server data to local array
-function updatePlayers(data){
-    newOpponents = []
-    for(var key in data){
-        // console.log("adding " + key);
-        // console.log(data);
-        // console.log(data[key]);
-        newOpponents.push(new opponent(key, "blue", data[key].x, data[key].y, 20, 20));
-    }
-    opponents = newOpponents;
-}
 
+// Building Object
 function building(width, height, x, y) {
     this.width = width;
     this.height = height;
     this.x = x;
     this.y = y;
+    this.collision = function (x, y, width, height) {
+        if (x < this.x + this.width &&
+            x + width > this.x &&
+            y < this.y + this.height &&
+            y + height > this.y) {
+                return true;
+        } else {
+            return false;
+        }
+    }
     // ----- USED TO PHYSICALLY DRAW BUILDINGS (FOR TESTING) --------
     /*
     this.update = function(x, y) {
@@ -130,12 +196,44 @@ function building(width, height, x, y) {
     */
 }
 
+// Coin Object
+function coin(index, x, y) {
+    this.index = index;
+    this.x = x;
+    this.y = y;
+    this.size = 12;
+    // draw coin on map
+    this.update = function(x, y) {
+        ctx = map.context;
+        ctx.beginPath();
+        ctx.arc(this.x - x, this.y - y, 3, 0, 2 * Math.PI, false);
+        ctx.fillStyle = 'yellow';
+        ctx.fill();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'black';
+        ctx.stroke();
+    }
+    
+    this.collision = function(x, y, width, height) {
+        if (x < this.x + this.size &&
+            x + width > this.x &&
+            y < this.y + this.size &&
+            y + height > this.y) {
+                return true;
+        } else {
+            return false;
+        }
+    }
+}
+
+// Opponent Object
 function opponent(username, color, x, y, width, height) {
     this.userName = username;
     this.width = width;
     this.height = height;
     this.x = x;
     this.y = y;
+    this.color = color;
     this.update = function(x, y) {
         ctx = map.context;
         ctx.fillStyle = color;
@@ -143,69 +241,62 @@ function opponent(username, color, x, y, width, height) {
     }
 }
 
+/* -------------- GAME FUNCTIONS -------------- */
+// add players from server data to local array
+function updatePlayers(data){
+    newOpponents = [];
+    for(var key in data){
+        // console.log("adding " + key);
+        // console.log(data);
+        // console.log(data[key]);
+        newOpponents.push(new opponent(key, data[key].color, data[key].x, data[key].y, 20, 20));
+    }
+    opponents = newOpponents;
+}
+
+function updateCoins(data) {
+    newCoins = [];
+    for(var i = 0, len = data.length; i < len; i++) {
+        if(data[i] != null)
+            newCoins.push(new coin(i, data[i].x, data[i].y));
+    }
+    coins = newCoins;
+}
+
+
+// redraw game locally
 function updateGameLocal() {
     map.clear();
     myPlayer.move();
     map.update(myPlayer.x, myPlayer.y, myPlayer.color);
 
-    // ----- USED TO PHYSICALLY DRAW BUILDINGS (FOR TESTING) --------
-    /*
-    for (var i = 0, len = buildings.length; i < len; i++) {
-       buildings[i].update(scaleX(myPlayer.x), scaleY(myPlayer.y));
-    }
-    */
-
+    // Draw other players
     for (var i = 0, len = opponents.length; i < len; i++) {
         if (opponents[i].userName != myUserName)
             opponents[i].update(scaleX(myPlayer.x), scaleY(myPlayer.y));
-     }
+    }
+    // Draw coins
+    for (var i = 0, len = coins.length; i < len; i++) {
+        if (coins[i] != null)
+            coins[i].update(scaleX(myPlayer.x), scaleY(myPlayer.y));
+    }
+    // ----- USED TO PHYSICALLY DRAW BUILDINGS (FOR TESTING) --------
+    // for (var i = 0, len = buildings.length; i < len; i++) {
+    //    buildings[i].update(scaleX(myPlayer.x), scaleY(myPlayer.y));
+    // }
 }
 
+// update server with location
 function updateGameRemote() {
     myPlayer.sendLocation();
 }
 
-function collision(x, y, width, height, building) {
-    if (x < building.x + building.width &&
-        x + width > building.x &&
-        y < building.y + building.height &&
-        y + height> building.y) {
-            return true;
-    } else {
-        return false;
-    }
+function scaleX(x) {
+    return x - (windowWidth / 2);
 }
 
-function logout() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "logout", true);
-    xhr.send();
-    socket.emit('logout', myUserName);
-    xhr.onreadystatechange = function(){
-        if(xhr.readyState === 4 && xhr.status == 200){
-            window.location = "/login.html";
-        }
-        else{
-            console.log("log out error");
-            // alert("you can never leave");
-        }
-    }
-}
-
-// adapted from https://www.w3schools.com/js/js_cookies.asp
-function parseCookieData(key) {
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(key) == 0) {
-            return c.substring(key.length, c.length);
-        }
-    }
-    return "unknown";
+function scaleY(y) {
+    return y - (windowHeight / 2);
 }
 
 function loadBuildings() {
@@ -255,21 +346,4 @@ function loadBuildings() {
     buildings[43] = new building(155, 250, 1152, 987);  //RushRhees
 
     //buildings[n] = new building(width, height, x, y);
-}
-
-function scaleX(x) {
-    return x - (windowWidth / 2);
-}
-
-function scaleY(y) {
-    return y - (windowHeight / 2);
-}
-
-function loadUsername() {
-    username = parseCookieData("userName=");
-    document.getElementById("userName").textContent = "Welcome " + username + "!";
-}
-
-function navigateToMenu() {
-    window.location = "/menu.html";
 }
