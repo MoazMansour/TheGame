@@ -46,7 +46,6 @@ exports.getSalt = function(request, response) {
 		 	return console.log(err);
 		}
 		if(row.length != 0 ){
-			console.log("salt here : "+ row[0].salt);
 			response.send({salt: row[0].salt});
 		}
 		else{
@@ -86,7 +85,6 @@ exports.signupPost = function(request, response) {
 			response.sendStatus(404);
 		} else {
 			conn.query("INSERT INTO users (username,salt,hash,sessionID,color) VALUES(?,?,?,?,?);", [request.body.username, request.body.salt, request.body.hash, "", request.body.color], function(err) {
-				console.log(request.body);
 					if(err)
 						return console.log(err);
 					else
@@ -95,9 +93,9 @@ exports.signupPost = function(request, response) {
 						response.cookie('color', request.body.color, {maxAge: 900000, httpOnly: false, encode: String});
 						response.send({ redirect: '/' });
 						console.log("USER ADDED");
-						conn.query("SELECT * from users", function(err, row){
-							console.log("Username: " + row[0].username +" Salt: " + row[0].salt + " Hash: " + row[0].hash+ " Session ID: " + row[0].sessionID + " Color: " + row[0].color);
-						});
+						// conn.query("SELECT * from users", function(err, row){
+						// 	console.log("Username: " + row[0].username +" Salt: " + row[0].salt + " Hash: " + row[0].hash+ " Session ID: " + row[0].sessionID + " Color: " + row[0].color);
+						// });
 				});
 		}
 	});
@@ -129,19 +127,16 @@ function saveLogin (sid, username){
 //Login page files:
 exports.game = function(request, response){
 	response.sendFile(__dirname + "/resources/templates/game/game.html");
-	console.log("game.hmtl sent");
 }
 
 //--------------------------------------------------------------------------
 // Menu page routes:
 exports.menu = function(request, response){
 	response.sendFile(__dirname + "/resources/templates/menu/menu.html");
-	console.log("menu.html sent");
 }
 
 exports.menujs = function(request, response){
 	response.sendFile(__dirname + "/resources/templates/menu/menu.js");
-	console.log("menu.js sent");
 }
 
 exports.menustyle = function(request, response){
@@ -151,7 +146,6 @@ exports.menustyle = function(request, response){
 //--------------------------------------------------------------------------
 // Account page routes:
 exports.updateColor = function(request, response){
-	console.log("Color: " + request.body.color);
 	conn.query("UPDATE users SET color = ? WHERE sessionID = ?", [request.body.color, request.session.id], function(err){
 		if(err){
 			console.log(err);
@@ -163,19 +157,17 @@ exports.updateColor = function(request, response){
 		}
 	})
 	conn.query("SELECT * from users", function(err, row){
-		console.log("Username: " + row[0].username + " Account ID: "+row[0].account_id+" Salt: " + row[0].salt + " Hash: " + row[0].hash+ " Session ID: " + row[0].sessionID + " Color: " + row[0].color);
+		//console.log("Username: " + row[0].username + " Account ID: "+row[0].account_id+" Salt: " + row[0].salt + " Hash: " + row[0].hash+ " Session ID: " + row[0].sessionID + " Color: " + row[0].color);
 	});
 
 }
 
 exports.account = function(request, response){
 	response.sendFile(__dirname + "/resources/templates/account/account.html");
-	console.log("menu.html sent");
 }
 
 exports.accountjs = function(request, response){
 	response.sendFile(__dirname + "/resources/templates/account/account.js");
-	console.log("menu.js sent");
 }
 
 exports.accountstyle = function(request, response){
@@ -185,42 +177,34 @@ exports.accountstyle = function(request, response){
 
 exports.home = function(request, response){
 	response.sendFile(__dirname + '/resources/templates/game/game.html');
-	console.log("game.html sent");
 }
 
 exports.usrimg = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/login/images/user.png');
-	console.log("user.png sent");
 }
 
 exports.keyimg = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/login/images/key.png');
-	console.log("key.png sent");
 }
 
 exports.redoimg = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/login/images/redo.png');
-	console.log("redo.png sent");
 }
 
 exports.nameimg = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/login/images/name.png');
-	console.log("name.png sent");
 }
 
 exports.mailimg = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/login/images/mail.png');
-	console.log("mail.png sent");
 }
 
 exports.lockimg = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/login/images/lock.png');
-	console.log("lock.png sent");
 }
 
 exports.avatarimg = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/login/images/avatar.png');
-	console.log("avatar.png sent");
 }
 
 //---------------------------
@@ -228,13 +212,11 @@ exports.avatarimg = function(request, response) {
 //Login javascript code
 exports.loginjs = function(request, response){
 	response.sendFile(__dirname + '/resources/templates/login/login.js');
-	console.log("login.js sent");
 }
 
 //Hashing algorithm
 exports.md5 = function(request, response){
 	response.sendFile(__dirname + '/resources/templates/login/md5.js');
-	console.log("md5.js sent");
 }
 
 //--------------------------------------------------------------------------
@@ -242,41 +224,34 @@ exports.md5 = function(request, response){
 
 exports.signup = function(request, response){
 	response.sendFile(__dirname + '/resources/templates/login/signup.html');
-	console.log("signup.html sent");
 }
 
 exports.login = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/login/login.html');
-	console.log("login.html sent");
 }
 
 //---------------------------
 //Game routes
 exports.gameBackground = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/game/map.jpg');
-	console.log("game background sent");
 }
 
 exports.gamejs = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/game/game.js');
-	console.log("game.js sent");
 }
 
 exports.gameStyle = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/game/style.css');
-	console.log("game_style.css sent");
 }
 //---------------------------
 //TheGame Common style file and background
 
 exports.style = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/login/style.css');
-	console.log("style.css sent");
 }
 
 exports.background = function(request, response) {
 	response.sendFile(__dirname + '/resources/templates/login/images/background.jpg');
-	console.log("background.jpg sent");
 }
 
 exports.mapbk = function (request, response){

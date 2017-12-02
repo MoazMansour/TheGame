@@ -1,4 +1,3 @@
-//must have node JS setup on system
 var express = require('express');
 var routes = require('./routes.js');
 var bodyParser = require('body-parser');
@@ -38,7 +37,6 @@ app.use(session({
 
 //Middleware for persistent login
 app.use("/", function(request, response, next){
-	console.log(request.url);
 	conn.query("SELECT username FROM users WHERE sessionID = ?",[request.session.id], function(err,row){
 		restrictedRoutes = /\/menu*|\/game*|\/account*/;
 		if(row.length == 0){
@@ -153,7 +151,6 @@ io.on('connection', function (socket) {
 
 	//sends coin array to user 
 	socket.on('getCoins', function(data){
-		console.log("sending coin array");
 		socket.emit('coinData', coinLoc);
 	})
 
