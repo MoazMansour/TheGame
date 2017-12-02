@@ -151,6 +151,10 @@ io.on('connection', function (socket) {
 		console.log(data);
 		console.log(coinLoc);
 		socket.broadcast.emit('removeCoin', data);
+		if(activeCoins() <= 20){
+			coinReset();
+			socket.emit('coinData', coinLoc);
+		}
 	})
 
 	//sends coin array to user 
@@ -159,15 +163,31 @@ io.on('connection', function (socket) {
 		socket.emit('coinData', coinLoc);
 	})
 })
-
-//TODO waiting on MO
+coinReset();
+//Helper functions 
 function coinReset(){
-	conn.query("SELECT location FROM summons WHERE state_id = 1 ORDER BY RAND() LIMIT 3 ", function(err, row){
+	conn.query("SELECT location FROM summons WHERE state_id = 1 ORDER BY RAND() LIMIT 50 ", function(err, row){
 		if(err)
 			console.log(err);
 		else{
-			console.log(row);
+			coinLoc= [];
+			row.forEach(element => {
+				var x = parseInt(element["location"].substring(0,4));
+				var y = parseInt(element["location"].substring(5,9));
+				var obj = { "x": x, "y": y };
+				coinLoc.push(obj);
+			});
+			console.log(coinLoc);
 		}
 	});
 
+}
+
+function activeCoins(){
+	var count = 0;
+	coinLoc.forEach(element => {
+		if(element == null)
+			count++;
+	});
+	return count;
 }
