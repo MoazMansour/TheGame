@@ -23,7 +23,6 @@ function startGame() {
         updatePlayers(JSON.parse(data));
     });
     socket.on('coinData', function(data) {
-        console.log(data);
         updateCoins(data);
     });
     socket.on('scoreUpdate', function(data) {
@@ -32,7 +31,7 @@ function startGame() {
     });
     socket.on('removeCoin', function(data) {
         coins[data] = null;
-        console.log(coins);
+        console.log("remove: " + data);
     })
 
     myUserName = parseCookieData("userName=");
