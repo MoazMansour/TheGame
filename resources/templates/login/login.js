@@ -62,12 +62,20 @@ function signup() {
     timeStamp = Date.now();
     password = document.getElementById("password").value;
     passWordCheck = document.getElementById("re-password").value;
+    user = document.getElementById("username").value;
     var color = document.getElementById("colorPicker").value;
-
+    if (user.length < 3) {
+        alert("Username must be atleast 3 characters.");
+        return;
+    }
+    if (password.length == 0) {
+        alert("Password field cannot be empty.");
+        return;
+    }
     if (password == passWordCheck) {
-        user = document.getElementById("username").value,
-        hash = String(CryptoJS.MD5(password + timeStamp)),
-        salt = String(timeStamp)
+        
+        hash = String(CryptoJS.MD5(password + timeStamp));
+        salt = String(timeStamp);
 
         var xhr = new XMLHttpRequest();
         var url = "signUp";
