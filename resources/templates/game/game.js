@@ -66,7 +66,7 @@ function parseCookieData(key) {
 
 function loadUsername() {
     username = parseCookieData("userName=");
-    document.getElementById("userName").textContent = username;
+    document.getElementById("userName").textContent = "Username: " + username;
     document.getElementById("curScore").textContent = "Score: "+ score + " | High Score: "+highScore;
 }
 
