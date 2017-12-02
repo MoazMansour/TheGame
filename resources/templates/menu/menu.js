@@ -42,3 +42,28 @@ function parseCookieData(key) {
     }
     return "unknown";
 }
+
+function displayScores(){
+  username = parseCookieData("userName=");
+  var xhr = new XMLHttpRequest();
+  var url = "displayScores";
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json");
+  var data = JSON.stringify({ "username": username });
+  xhr.send(data);
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      alert("Function Success");
+      var myObj = JSON.parse(this.responseText);
+      var para = document.createElement("p");
+      var node = document.createTextNode("This is new.");
+      para.appendChild(node);
+      var scores = document.getElementById("recent_scores");
+      scores.appendChild(myObj);
+
+      // window.location = JSON.parse(xhr.response).redirect
+      }
+    else if (xhr.readyState === 4 && xhr.status === 404)
+      alert("Error Happened please try again");
+    }
+  }

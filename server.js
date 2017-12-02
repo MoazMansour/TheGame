@@ -103,6 +103,7 @@ app.post('/login', routes.loginPost)
 app.post('/signUp', routes.signupPost)
 app.post('/deleteUser', routes.deleteUserPost)
 app.post('/updateColor', routes.updateColor)
+app.post('/displayScores', routes.displayScores)
 
 
 // GAME SOCKET STUFF BELOW HERE
