@@ -128,7 +128,7 @@ io.on('connection', function (socket) {
 		userLoc[data.username]["x"] = data.loc.x;
 		userLoc[data.username]["y"] = data.loc.y;
 		userLoc[data.username]["color"] = data.color;
-		console.log(JSON.stringify(userLoc));
+		// console.log(JSON.stringify(userLoc));
 
 		socket.emit('playerLocUpdate', JSON.stringify(userLoc));
 
@@ -150,8 +150,9 @@ io.on('connection', function (socket) {
 			io.to(client).emit('scoreUpdate', 1);
 		}
 		console.log(data);
-		console.log(coinLoc);
+		// console.log(coinLoc);
 		socket.broadcast.emit('removeCoin', data);
+		console.log(activeCoins());
 		if(activeCoins() <= 20){
 			coinReset();
 			socket.emit('coinData', coinLoc);
@@ -178,7 +179,7 @@ function coinReset(){
 				var obj = { "x": x, "y": y };
 				coinLoc.push(obj);
 			});
-			console.log(coinLoc);
+			console.log("RESETTING");
 		}
 	});
 
@@ -190,5 +191,5 @@ function activeCoins(){
 		if(element == null)
 			count++;
 	});
-	return count;
+	return coinLoc.length - count;
 }
