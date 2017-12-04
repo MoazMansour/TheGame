@@ -35,11 +35,11 @@ function startGame() {
     socket.on('scoreUpdate', function(data) {
         score += data;
         document.getElementById("curScore").textContent = "Score: "+ score + " | High Score: "+highScore;
-        console.log(score);
+        //console.log(scconsole.log(score);
     });
     socket.on('removeCoin', function(data) {
         coins[data] = null;
-        console.log("remove: " + data);
+        //console.log("remove: " + data);
     });
     loadUsername();
 
@@ -88,7 +88,7 @@ function logout() {
             window.location = "/login.html";
         }
         else{
-            console.log("log out error");
+            //console.log("log out error");
             // alert("you can never leave");
         }
     }
@@ -112,7 +112,7 @@ var map = {
         node.appendChild(this.canvas);
         //document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.localInterval = setInterval(updateGameLocal, 20);
-        this.remoteInterval = setInterval(updateGameRemote, 1000);
+        this.remoteInterval = setInterval(updateGameRemote, 100);
         window.addEventListener('keydown', function (e) {
             keys[e.keyCode] = true;
         })
