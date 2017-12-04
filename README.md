@@ -1,4 +1,6 @@
-# CSC 410 Semester Project
+# <center> UR Game </center>
+
+CSC 410 Semester Project
 
 ## Members
 
