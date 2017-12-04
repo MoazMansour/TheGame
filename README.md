@@ -3,7 +3,6 @@
 ## Members
 
 Willie Cohen  
-Mounica Kota  
 Moaz Mansour  
 Sayudh Roy  
 Aeshaan Wahlang  
