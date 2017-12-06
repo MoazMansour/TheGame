@@ -10,6 +10,7 @@ var windowWidth = 500;
 var windowHeight = 400;
 var score = 0;
 var highScore = 0;
+var inGame;
 
 // /* -------------- SYSTEM FUNCTIONALITY -------------- */
 function startGame() {
@@ -42,7 +43,7 @@ function startGame() {
         //console.log("remove: " + data);
     });
     loadUsername();
-
+    inGame=true;
     myUserName = parseCookieData("userName=");
     myColor = parseCookieData("color=");
     myPlayer = new player(20, 20, myColor, 1215, 1455);
@@ -74,12 +75,14 @@ function loadUsername() {
 
 function navigateToMenu() {
     sendScore();
+    inGame=false;
     socket.emit('logout', myUserName);
     window.location = "/menu.html";
 }
 
 function logout() {
     sendScore();
+    inGame=false;
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "logout", true);
     xhr.send();
@@ -179,8 +182,9 @@ function player(width, height, color, x, y) {
     }
 
     this.sendLocation = function() {
-        //added temp username
-        socket.emit('updatePlayerLoc', {username: myUserName, loc: {x: this.x, y: this.y}, color: myColor });
+        if(inGame) {
+            socket.emit('updatePlayerLoc', {username: myUserName, loc: {x: this.x, y: this.y}, color: myColor });
+        }
     }
 }
 
