@@ -74,6 +74,7 @@ function loadUsername() {
 
 function navigateToMenu() {
     sendScore();
+    socket.emit('logout', myUserName);
     window.location = "/menu.html";
 }
 

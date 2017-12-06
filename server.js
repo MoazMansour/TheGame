@@ -126,12 +126,15 @@ io.on('connection', function (socket) {
 		userLoc[data.username]["y"] = data.loc.y;
 		userLoc[data.username]["color"] = data.color;
 		socket.emit('playerLocUpdate', JSON.stringify(userLoc));
+		console.log(userLoc);
 	})
 
 	//remove player form userLoc when he logs out
 	socket.on('logout', function(data){
 		delete userLoc[data];
-		console.log("User " + data + " has been logged out");
+		console.log("Player " + data + " has been removed");
+		console.log("new List: ");
+		console.log(userLoc);
 	})
 
 	//removes coin from coin array
